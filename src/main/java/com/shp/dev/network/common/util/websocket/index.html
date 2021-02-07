@@ -1,0 +1,137 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>客户端一</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <style type="text/css">
+        h3,
+        h4 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<input type="text" id="accept" placeholder="请输入你的姓名"/> &nbsp;
+<input type="text" id="send" placeholder="请输入发送人"/> &nbsp;
+
+<input type="text" id="message"/>
+
+
+<button onclick="send()">发送
+    <button/>
+
+    <h3>客户端一测试收发消息</h3>
+
+    <textarea id="messageId" readonly="readonly" cols="120" rows="30">
+
+    </textarea>
+
+
+    <script type="text/javascript">
+
+
+        var sendlockReconnect = false;  //避免ws重复连接
+        var sendWs = null;          // 判断当前浏览器是否支持WebSocket
+        var sendWsUrl = "ws://47.92.213.36:8090/ws/chat";
+        createSendWebSocket(sendWsUrl);   //连接ws
+
+        function createSendWebSocket(url) {
+            try {
+                if ('WebSocket' in window) {
+                    sendWs = new WebSocket(url);
+                }
+                sendInitEventHandle();
+            } catch (e) {
+                sendReconnect(url);
+                console.log(e);
+            }
+        }
+
+        function sendInitEventHandle() {
+            sendWs.onclose = function () {
+                sendReconnect(sendWsUrl);
+                console.log("连接关闭!" + new Date().toLocaleString());
+            };
+            sendWs.onerror = function () {
+                sendReconnect(sendWsUrl);
+                console.log("连接错误!");
+            };
+            sendWs.onopen = function () {
+                console.log("连接成功!" + new Date().toLocaleString());
+                sendHeartCheck.reset().start();      //心跳检测重置
+            };
+            sendWs.onmessage = function (event) {    //如果获取到消息，心跳检测重置
+                sendHeartCheck.reset().start();      //拿到任何消息都说明当前连接是正常的
+                if (event.data != 'ping') {
+                    var obj = JSON.parse(event.data); //由JSON字符串转换为JSON对象
+                    $("#messageId").append("\n\t\t\t\t\t\t他:" + obj.message);
+                }
+            };
+        }
+
+        function sendReconnect(url) {
+            if (sendlockReconnect) return;
+            sendlockReconnect = true;
+            setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+                createSendWebSocket(url);
+                sendlockReconnect = false;
+            }, 2000);
+        }
+
+        //心跳检测
+        var sendHeartCheck = {
+            timeout: 1000,        //1分钟发一次心跳
+            timeoutObj: null,
+            serverTimeoutObj: null,
+            reset: function () {
+                clearTimeout(this.timeoutObj);
+                clearTimeout(this.serverTimeoutObj);
+                return this;
+            },
+            start: function () {
+                var self = this;
+                this.timeoutObj = setTimeout(function () {
+                    //这里发送一个心跳，后端收到后，返回一个心跳消息，
+                    //onmessage拿到返回的心跳就说明连接正常
+                    sendWs.send("ping");
+                    self.serverTimeoutObj = setTimeout(function () {//如果超过一定时间还没重置，说明后端主动断开了
+                        sendWs.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+                    }, self.timeout)
+                }, this.timeout)
+            }
+        }
+
+        function send() {
+            var message = document.getElementById("message").value;
+            $("#messageId").append("\n我:" + message);
+			var send = document.getElementById("send").value;
+			var accept = document.getElementById("accept").value;
+            sendWs.send("{\"token\":\""+accept+"\",\"status\":\"accept\"}");
+            sendWs.send("{\"message\":\"" + message + "\",\"token\":\""+send+"\",\"status\":\"send\"}");
+            $("#message").val('');
+        }
+
+        //回车事件绑定
+        $('#message').bind('keyup', function (event) {
+            if (event.keyCode == "13") {
+                //回车执行查询
+                send();
+            }
+        });
+
+
+        // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        window.onbeforeunload = function () {
+            sendWs.close();
+            acceptWs.close();
+        }
+
+
+    </script>
+
+</body>
+
+</html>

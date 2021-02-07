@@ -1,0 +1,258 @@
+spring:
+
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      # 发生错误后，消息重发的次数。
+      retries: 0
+      #当有多个消息需要被发送到同一个分区时，生产者会把它们放在同一个批次里。该参数指定了一个批次可以使用的内存大小，按照字节数计算。
+      batch-size: 16384
+      # 设置生产者内存缓冲区的大小。
+      buffer-memory: 33554432
+      # 键的序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 值的序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # acks=0 ： 生产者在成功写入消息之前不会等待任何来自服务器的响应。
+      # acks=1 ： 只要集群的首领节点收到消息，生产者就会收到一个来自服务器成功响应。
+      # acks=all ：只有当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
+      acks: 1
+    consumer:
+      # 自动提交的时间间隔 在spring boot 2.X 版本中这里采用的是值的类型为Duration 需要符合特定的格式，如1S,1M,2H,5D
+      auto-commit-interval: 1S
+      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
+      # latest（默认值）在偏移量无效的情况下，消费者将从最新的记录开始读取数据（在消费者启动之后生成的记录）
+      # earliest ：在偏移量无效的情况下，消费者将从起始位置读取分区的记录
+      auto-offset-reset: earliest
+      # 是否自动提交偏移量，默认值是true,为了避免出现重复数据和数据丢失，可以把它设置为false,然后手动提交偏移量
+      enable-auto-commit: false
+      # 键的反序列化方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 值的反序列化方式
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      # 在侦听器容器中运行的线程数。
+      concurrency: 5
+      #listner负责ack，每调用一次，就立即commit
+      ack-mode: manual_immediate
+      missing-topics-fatal: false
+
+  #配置rabbitMq 服务器
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+
+  #配置redis 服务器
+  redis:
+    host: 47.92.213.36
+    port: 6379
+    password: 2948299576
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 500
+        min-idle: 0
+    lettuce:
+      shutdown-timeout: 0
+
+
+  #配置自动建表
+  #  ddl-auto:create----每次运行该程序，没有表格会新建表格，表内有数据会清空
+  #  ddl-auto:create-drop----每次程序结束的时候会清空表
+  #  ddl-auto:update----每次运行程序，没有表格会新建表格，表内有数据不会清空，只会更新
+  #  ddl-auto:validate----运行程序会校验数据与数据库的字段类型是否相同，不同会报错
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      maxFileSize: 512MB
+      maxRequestSize: 1024MB
+
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+      exclude: WEB-INF/**
+  freemarker:
+    cache: false    #页面不加载缓存，修改即时生效
+
+  # ===================================================================
+  # 数据源
+  # ===================================================================
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://47.92.213.36:3306/network?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    platform: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    # 下面为连接池的补充设置，应用到上面所有数据源中
+    # 初始化大小，最小，最大
+    initialSize: 1
+    minIdle: 3
+    maxActive: 20
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    #资源监控地址  http://localhost:8080/druid/login.html admin/admin
+
+  # ===================================================================
+  # 配置activemq消息队列
+  # ===================================================================
+  activemq:
+    #启动activemq 进入D:\installTmp\apache-activemq-5.16.0\bin目录  执行命令：activemq.bat start
+    #地址：http://127.0.0.1:8161/  admin/admin
+    #把连接端口8161改为61616 否则会报错 javax.jms.JMSException: Unknown data type: 47
+    broker-url: tcp://127.0.0.1:61616
+    user: admin
+    password: admin
+    pool:
+      # 使用flase,此处改为true报错，不清楚什么原因
+      enabled: false
+      max-connections: 10
+
+    queueName: publish.queue
+    topicName: publish.topic
+
+
+  session:
+    #指定redis实现spring session
+    store-type: redis
+    #过期时间，单位s
+    timeout: 600
+    redis:
+      flush-mode: #Sessions 刷新模式
+      namespace: #用于存储会话的键的命名空间。
+
+# ===================================================================
+# 配置拦截器
+# ===================================================================
+
+  aop:
+    auto: true
+    proxy-target-class: false
+
+
+flowable:
+  #关闭定时任务JOB
+  async-executor-activate: false
+
+thymeleaf:
+  cache: false
+
+# ===================================================================
+# mybatis配置
+# ===================================================================
+mybatis:
+  type-aliases-package: com.shp.dev.network
+  mapper-locations: classpath:mapper/*.xml
+logging:
+  level:
+    com.shp.dev.network: info
+
+# ===================================================================
+# mybatis plus配置
+# ===================================================================
+mybatis-plus:
+  #MyBatis Mapper 所对应的 XML 文件位置
+  mapper-locations: classpath*:mapper/*.xml
+  #  MyBaits 别名包扫描路径，通过该属性可以给包中的类注册别名，
+  #注册后在 Mapper 对应的 XML 文件中可以直接使用类名，而不用使用全限定的类名（即 XML 中调用的时候不用包含包名）
+  typeAliasesPackage: com.shp.dev.network
+  # 与 typeAliasesPackage 一起使用，仅扫描以该类作为父类的类
+  # type-aliases-super-type: java.lang.Object
+  # 配置扫描通用枚举,配置该属性，会对枚举类进行注入
+  typeEnumsPackage: com.shp.dev.network
+  # 该包下的类注册为自定义类型转换处理类，用于属性类型转换
+  # type-handlers-package: com.luwei.demo.mybatisplusdemo.handler
+  # 指定 mybatis 处理器
+  # executorType: simple
+  configuration:
+    #使用驼峰法映射属性,配置这个resultType可以映射
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      # 配置表明前缀，例如表设计时表名为tb_manager，对应entity为Manager
+      table-prefix: tb_
+      #逻辑已删除值
+      logic-delete-value: 1
+      #逻辑未删除值
+      logic-not-delete-value: 0
+      # 是否开启like查询，即对 stirng 字段是否使用 like，默认不开启
+      # column-like: false
+
+# ===================================================================
+# 分页插件
+# ===================================================================
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countsql
+
+# ===================================================================
+# tomcat服务配置
+# ===================================================================
+server:
+  port: 8080
+
+# ===================================================================
+# token配置
+# ===================================================================
+token:
+  header: Authorization   # 令牌自定义标识
+  secret: abcdefghijklmnopqrstuvwxyz   # 令牌秘钥
+  expireTime: 7200   # 令牌有效期（默认30分钟）
+
+# ===================================================================
+# jwt配置
+# ===================================================================
+jwt:
+  secret: secret
+  expiration: 7200000
+  token: Authorization
+
+# ===================================================================
+# 分布式文件系统FDFS配置
+# ===================================================================
+fdfs:
+  so-timeout: 1501 #上传的超时时间
+  connect-timeout: 601 #连接超时时间
+  thumb-image:             #缩略图生成参数
+    width: 150
+    height: 150
+  tracker-list:            #TrackerList参数,支持多个
+    - 47.92.213.36:22122
+  web-server-url: http://47.92.213.36:8888/
+
+# ===================================================================
+# 服务地址
+# ===================================================================
+aliyun.host: 47.92.213.36
+aliyun.port: 22
+aliyun.username: root
+aliyun.password: sS123456
+aliyun.directory: /usr/local/test
