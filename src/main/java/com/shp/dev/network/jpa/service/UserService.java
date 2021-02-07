@@ -13,5 +13,7 @@ import java.util.List;
  * @ProjectName: network
  */
 public interface UserService {
+
     List<User> findAll();
+
 }
