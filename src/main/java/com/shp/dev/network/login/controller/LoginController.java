@@ -50,9 +50,7 @@ public class LoginController {
     @GetMapping("/")
     @ApiOperation("跳转到swagger-ui")
     public void to(HttpServletResponse res) {
-
-
-
+        commonService.to(res);
     }
 
 

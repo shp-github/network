@@ -18,9 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -172,7 +175,7 @@ public class CommonService {
             ImageIO.write((RenderedImage) map.get("codePic"), "jpg", out);
             ResultBean resultBean = new ResultBean();
             resultBean.put("uuid", map.get("code"));
-            resultBean.put("img", "data:image/jpg;base64,"+Base64.encode(out.toByteArray()));
+            resultBean.put("img", "data:image/jpg;base64," + Base64.encode(out.toByteArray()));
             resultBean.put(ResultBean.CODE, 200);
             return resultBean;
         } catch (Exception e) {
@@ -222,4 +225,30 @@ public class CommonService {
         return ResultBean.success();
     }
 
+    public void to(HttpServletResponse res) {
+
+        //设置传输格式
+        res.setContentType("text/html;charset=gb2312");
+        PrintWriter p = null;
+
+        try {
+            p = res.getWriter();
+            p.print("<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "<iframe id=\"mainContent\" width=\"100%\" height=\"100%\"></iframe>\n" +
+                    "</body>\n" +
+                    "<script>\n" +
+                    " window.open(\"http://localhost:8080/swagger-ui.html\", '_blank');\n" +
+                    "</script>\n" +
+                    "</html>");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            p.close();
+        }
+    }
 }
