@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -53,38 +51,6 @@ public class LoginController {
     @ApiOperation("跳转到swagger-ui")
     public void to(HttpServletResponse res) {
 
-        //设置传输格式
-        res.setContentType("text/html;charset=gb2312");
-        PrintWriter p = null;
-
-        try {
-
-            p = res.getWriter();
-
-            p.print("<!DOCTYPE html>\n" +
-                    "<html lang=\"zh\">\n" +
-                    "\t<head>\n" +
-                    "\t</head>\n" +
-                    "\t<body  bgcolor=\"#FFFFCC\" leftmargin=\"0\" topmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">\n" +
-                    "\t\t<iframe \n" +
-                    "\t\t  id=\"iframeId\"\n" +
-                    "\t\t  scrolling=\"no\"\n" +
-                    "\t\t  framespacing=\"0\"\n" +
-                    "\t\t  vspace=\"0\"\n" +
-                    "\t\t  hspace=\"0\" \n" +
-                    "\t\t  frameborder=\"0\"\n" +
-                    "\t\t  width=\"100%\" \n" +
-                    "\t\t  height=\"3000px\"\n" +
-                    "\t\t  src=\"http://localhost:8080/swagger-ui.html\">\n" +
-                    "\t\t</iframe>\n" +
-                    "\t</body>\n" +
-                    "</html>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            p.close();
-        }
 
 
     }
