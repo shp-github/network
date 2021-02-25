@@ -77,7 +77,7 @@ public class LoginController {
         } else if (sysUser.getId() != null && sysUser.getId() != 0) {
             return loginService.editLogin(sysUser);
         }
-        //添加用户
+        //添加用户ma
         return loginService.addLogin(sysUser);
     }
 

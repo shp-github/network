@@ -30,6 +30,18 @@ public class Main {
 
     public static void main(String[] args) {
 
+        System.out.println();
+
+
+
+    }
+
+
+
+
+
+    public static void main3(String[] args) {
+
         System.out.println(File.separator);
 
         String outFIle="asdgag.jpg";
