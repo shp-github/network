@@ -31,6 +31,7 @@ public class StartedUpRunner  implements ApplicationRunner, ApplicationListener<
         log.info("恭喜您，启动成功!");
         log.info("服务端口:{}", serverPort);
         log.info("进程ID:{}", pid);
+        log.info("接口文档地址:http://localhost:{}",serverPort);
         log.info("++++++++++++++++++++++++++++++++++++++++++++");
     }
     public int getPort() {

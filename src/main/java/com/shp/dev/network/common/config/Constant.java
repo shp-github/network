@@ -14,7 +14,7 @@ import java.util.List;
 public interface Constant {
 
     //redis配置
-    String REDIS_HOST="192.168.176.128";
+    String REDIS_HOST="192.168.1.33";
     Integer REDIS_PORT=6379;
     String REDIS_PASSWORD="123456";
     Integer REDIS_MAXIDL=100;
@@ -25,7 +25,7 @@ public interface Constant {
     //mysql配置
     String MYSQL_USERNAME = "root";
     String MYSQL_PASSWORD = "root";
-    String MYSQL_URL = "jdbc:mysql://47.92.213.36:3306/network?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8";
+    String MYSQL_URL = "jdbc:mysql://192.168.1.33:3306/network?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8";
     String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
 
 
