@@ -1,6 +1,6 @@
 package com.shp.dev.network.common.config;
 
-import com.shp.dev.network.login.model.SysUser;
+import com.shp.dev.network.model.SysUser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;

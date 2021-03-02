@@ -19,13 +19,14 @@ import java.util.Date;
  */
 public class UploadURLFileUtils {
 
+
     public static void main(String[] args) {
-
-        String filePath="https://ieye.hsttw.cn/snapshot/firePic/2020/10/12/13112800001310001864/1602466835563.jpg";
-        String s = saveFile(filePath, "E:\\image\\" + filePath);
+        String url="http://121.17.140.26:10000/api/v1/cloudrecord/video/play/13117120071320100001/13117120071320100001/20201222104410/20201222104510/video.mp4";
+        String s = UploadURLFileUtils.saveFile(url, "e:/1.mp4");
         System.out.println(s);
-
     }
+
+
 
 
     /**
@@ -39,15 +40,17 @@ public class UploadURLFileUtils {
      * @param: last 后缀
      * @return: java.lang.String
      */
-    public static String currencySaveFile(String filePath, String fileName, String frist,String last) {
+    public static String currencySaveFile(String filePath, String fileName, String frist, String last) {
+        System.out.println("接受到的拍照地址" + filePath);
         //最终文件的目录
-        String path=frist+"/"+new SimpleDateFormat("yyyy/MM/dd").format(new Date())+"/"+last+"/";
+        String path = frist + "/" + new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/" + last + "/";
         //文件目录不存在则创建
         File dirFile = new File(path);
         if (!dirFile.exists()) {
             dirFile.mkdirs();
         }
-        return saveFile(filePath,path+fileName);
+        System.out.println("拍照保存到目录中" + path + fileName);
+        return saveFile(filePath, path + fileName);
     }
 
 
@@ -63,13 +66,13 @@ public class UploadURLFileUtils {
      */
     public static String currencySaveFile(String filePath, String fileName, String last) {
         //最终文件的目录
-        String path=new SimpleDateFormat("yyyy/MM/dd").format(new Date())+"/"+last+"/";
+        String path = new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/" + last + "/";
         //文件目录不存在则创建
         File dirFile = new File(path);
         if (!dirFile.exists()) {
             dirFile.mkdirs();
         }
-        return saveFile(filePath,path+fileName);
+        return saveFile(filePath, path + fileName);
     }
 
     /**
@@ -85,28 +88,27 @@ public class UploadURLFileUtils {
      */
     public static String currencySaveFile(String filePath, String fileName) {
         //最终文件的目录
-        String path=new SimpleDateFormat("yyyy/MM/dd").format(new Date());
+        String path = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
         //文件目录不存在则创建
         File dirFile = new File(path);
         if (!dirFile.exists()) {
             dirFile.mkdirs();
         }
-        return saveFile(filePath,path+fileName);
+        return saveFile(filePath, path + fileName);
     }
 
     /**
      * @CreateBy: shp
      * @version：1.0
-     * @Description: TODO 下载在线图片地址  下载失败返回null  下载成功返回图片地址
+     * @Description: TODO
      * @CreateTime: 2020/8/18 0:10
      * @param: inFile 输入文件位置
      * @param: outFile 输出文件位置
      * @return: void
      */
-    public static String saveFile(String inFile, String outFile){
-
-        FileOutputStream os=null;
-        InputStream is=null;
+    public static String saveFile(String inFile, String outFile) {
+        FileOutputStream os = null;
+        InputStream is = null;
         try {
             // 构造URL
             URL url = new URL(inFile);
@@ -120,26 +122,27 @@ public class UploadURLFileUtils {
             int len;
             // 输出的文件流
             File file = new File(outFile);
-            os = new FileOutputStream(file, true);
+            os = new FileOutputStream(file);
             // 开始读取
             while ((len = is.read(bs)) != -1) {
                 os.write(bs, 0, len);
             }
             return outFile;
-        }catch (Exception e){
+        } catch (Exception e) {
+            System.out.println("把在线图片写入本地发生异常：" + e.getMessage());
             return null;
-        }finally {
+        } finally {
             try {
-                // 完毕，关闭所有链接
-                if(os!=null){
+                if (os != null) {
                     os.close();
                 }
-                if(is!=null){
+                if (is != null) {
                     is.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException ex) {
             }
         }
+
     }
 
 }

@@ -1,11 +1,11 @@
 package com.shp.dev.network.common.controller;
 
 import com.shp.dev.network.common.bean.ResultBean;
-import com.shp.dev.network.common.service.CommonService;
+import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.validation.Name;
-import com.shp.dev.network.sql.model.SysSql;
-import com.shp.dev.network.sql.service.SysSqlService;
+import com.shp.dev.network.common.util.sql.model.SysSql;
+import com.shp.dev.network.common.util.sql.service.SysSqlService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ import java.util.Map;
 public class CommonController {
 
     @Autowired
-    private CommonService commonService;
+    private ICommonService commonService;
     @Autowired
     private SysSqlService service;
 

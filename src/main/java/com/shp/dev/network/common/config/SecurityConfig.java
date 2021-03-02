@@ -1,7 +1,7 @@
 package com.shp.dev.network.common.config;//package com.shp.dev.network.common.config;
 
 
-import com.shp.dev.network.login.service.JwtUserDetailsService;
+import com.shp.dev.network.service.impl.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

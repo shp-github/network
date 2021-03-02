@@ -1,6 +1,5 @@
 package com.shp.dev.network.common.util.file;
 
-import com.shp.dev.network.common.util.base64.ToBash64;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
@@ -23,15 +22,6 @@ import java.util.Date;
 @Slf4j
 public class CommonFileUtils {
 
-
-    public static void main(String[] args) {
-
-        String str = ToBash64.GetImageStr("e:/131171400713201000011608702071746.jpg");
-
-        String s = currencySaveFile(str, "aaa.jpg", "/frist", "last");
-        System.out.println(s);
-
-    }
 
 
     /**

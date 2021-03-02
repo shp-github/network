@@ -1,5 +1,6 @@
 package com.shp.dev.network.common.util.file;
 
+import com.shp.dev.network.common.util.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -37,18 +38,40 @@ public class UploadFileUtils {
         return path;
     }
 
+    public static boolean currencyCreateDirectoryB(String frist, String last) {
+        //最终文件的目录
+        String path = frist + "/" + new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/" + last + "/";
+        //文件目录不存在则创建
+        File dirFile = new File(path);
+        if (!dirFile.exists()) {
+            dirFile.mkdirs();
+        }
+        return true;
+    }
+
 
     /**
      * @CreateBy: shp
      * @version：1.0
-     * @Description: TODO
-     * @CreateTime: 2020/8/18 0:34
-     * @param: filePath 文件地址 例如D:/aaa.jpg
-     * @param: fileName 件名 例如  aaa.jpg aaa.pdf
-     * @param: frist 前缀
-     * @param: last 后缀
+     * @Description: TODO 保存base64为图片
+     * @CreateTime: 2020/12/10 14:17
+     * @param: filePath
+     * @param: fileName
+     * @param: frist
+     * @param: last
      * @return: java.lang.String
      */
+    public static String currencySaveFileBase64(String filePath, String fileName, String frist, String last) {
+        //最终文件的目录
+        String path = frist + "/" + new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/" + last + "/";
+        //文件目录不存在则创建
+        File dirFile = new File(path);
+        if (!dirFile.exists()) {
+            dirFile.mkdirs();
+        }
+        return Base64Utils.writeFileByBase(filePath, path + fileName);
+    }
+
     public static String currencySaveFile(String filePath, String fileName, String frist, String last) {
         //最终文件的目录
         String path = frist + "/" + new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/" + last + "/";

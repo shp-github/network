@@ -1,7 +1,7 @@
 package com.shp.dev.network.common.util.task;
 
 import com.shp.dev.network.common.util.jdbc.JDBCUtils;
-import com.shp.dev.network.sql.model.SysSql;
+import com.shp.dev.network.common.util.sql.model.SysSql;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

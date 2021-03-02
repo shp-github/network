@@ -1,7 +1,7 @@
 package com.shp.dev.network.common.util.crud;
 
 
-import com.shp.dev.network.sql.model.SysSql;
+import com.shp.dev.network.common.util.sql.model.SysSql;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

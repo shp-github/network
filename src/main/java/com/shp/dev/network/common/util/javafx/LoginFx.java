@@ -2,7 +2,7 @@ package com.shp.dev.network.common.util.javafx;
 
 import com.shp.dev.network.common.util.MD5;
 import com.shp.dev.network.common.util.jdbc.JDBCUtils;
-import com.shp.dev.network.login.model.SysUser;
+import com.shp.dev.network.model.SysUser;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

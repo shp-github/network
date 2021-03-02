@@ -1,7 +1,7 @@
 package com.shp.dev.network.common.controller;
 
 import com.shp.dev.network.common.bean.ResultBean;
-import com.shp.dev.network.common.service.CommonService;
+import com.shp.dev.network.common.service.ICommonService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/update")
 public class AController {
     @Autowired
-    private CommonService commonService;
+    private ICommonService commonService;
 
     @ApiOperation("更新接口服务")
     @RequestMapping(value = "/updateService", method = RequestMethod.POST)
