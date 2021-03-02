@@ -37,10 +37,28 @@
         <minio.version>3.0.10</minio.version>
         <freemaker.version>2.3.23</freemaker.version>
         <jsoup.version>1.10.2</jsoup.version>
-
+        <elasticsearch.version>7.8.0</elasticsearch.version>
     </properties>
 
     <dependencies>
+
+        <!-- elasticsearch配置 -->
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <!--es工具类-->
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty4-client</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
 
         <!-- 提供丰富的Java工具方法，此模块为Hutool所有模块的打包汇总，最终形式为一个jar
             SONUtil工具
