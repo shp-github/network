@@ -14,9 +14,9 @@ import java.util.List;
 public interface Constant {
 
     //redis配置
-    String REDIS_HOST="47.92.213.36";
+    String REDIS_HOST="192.168.176.128";
     Integer REDIS_PORT=6379;
-    String REDIS_PASSWORD="2948299576";
+    String REDIS_PASSWORD="123456";
     Integer REDIS_MAXIDL=100;
     Integer REDIS_MINIDL=1;
     Integer REDIS_TIMEOUT=60*1000;

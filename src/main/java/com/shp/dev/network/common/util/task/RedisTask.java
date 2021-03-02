@@ -34,7 +34,7 @@ public class RedisTask {
             JDBCUtils<SysSql> jdbcUtils = new JDBCUtils();
             List<SysSql> sysSqls = jdbcUtils.queryList("select * from tb_sys_sql", SysSql.class);
             for (SysSql sysSql : sysSqls) {
-                redisTemplate.opsForValue().set(sysSql.getSqlName(), sysSql.getSqlText());
+                //redisTemplate.opsForValue().set(sysSql.getSqlName(), sysSql.getSqlText());
             }
         } catch (Exception e) {
             log.info("同步sql表到redis中失败" + e.getMessage());

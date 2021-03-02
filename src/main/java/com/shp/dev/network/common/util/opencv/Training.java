@@ -14,6 +14,7 @@ import org.bytedeco.opencv.opencv_face.FisherFaceRecognizer;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 
 import javax.swing.*;
+import java.io.File;
 import java.nio.IntBuffer;
 
 import static org.bytedeco.opencv.global.opencv_core.CV_32SC1;
@@ -28,7 +29,42 @@ import static org.bytedeco.opencv.global.opencv_imgproc.*;
  * @ProjectName: network
  */
 public class Training {
-    public static void main(String[] args)  throws  Exception{
+
+    public static void a(){
+        File file = new File("F:\\posOut");
+        Mat lables = new Mat(30,1,CV_32SC1);//对应20个标签值
+        IntBuffer lablesBuf = lables.createBuffer();
+        MatVector images =new MatVector(30);//一共20个训练样本
+        int i=0;
+        for (File listFile : file.listFiles()) {
+            Mat imread = opencv_imgcodecs.imread(listFile.getPath(), 0);
+            lablesBuf.put(i, 1);
+            images.put(i,imread);
+            i++;
+            System.out.println(i);
+        }
+
+        //创建人脸分类器，有Fisher、Eigen、LBPH，选哪种自己决定，这里使用FisherFaceRecognizer
+        FaceRecognizer fr = FisherFaceRecognizer.create();
+        //训练
+        fr.train(images, lables);
+        //保存训练结果
+        fr.save("FisherRecognize.xml");
+
+        //读取训练出的xml文件
+        fr.read("FisherRecognize.xml");
+        //设置阈值，阈值为0则任何人都不认识，阈值特别大的时候任何人都认识（返回和样本最相似的结果，永远不会返回-1）
+        //前面忘记说了，检测返回-1代表不能和训练结果匹配
+        fr.setThreshold(3000.0);
+
+
+    }
+
+    public static void main(String[] args) {
+        a();
+    }
+
+    public static void main1(String[] args)  throws  Exception{
         //准备两个人的训练图片，每个人脸十张
         //需要注意，训练的图片必须是相同大小的灰度图
 

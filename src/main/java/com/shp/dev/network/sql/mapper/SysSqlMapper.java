@@ -10,7 +10,7 @@ import java.util.List;
  * @Version: 1.0
  * @Description: TODO
  * @CreateTime: 2020/9/25 14:56
- * @PackageName: com.shp.dev.network.sql.mapper
+ * @PackageName: com.shp.dev.network8.0.sql.mapper
  * @ProjectName: network
  */
 @Mapper

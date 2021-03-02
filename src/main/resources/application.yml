@@ -46,9 +46,9 @@ spring:
 
   #配置redis 服务器
   redis:
-    host: 47.92.213.36
+    host: 192.168.176.128
     port: 6379
-    password: 2948299576
+    password: 123456
     jedis:
       pool:
         max-active: 8
@@ -91,7 +91,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
-    url: jdbc:mysql://47.92.213.36:3306/network?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.176.128:3306/network?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     platform: mysql
     type: com.alibaba.druid.pool.DruidDataSource
 

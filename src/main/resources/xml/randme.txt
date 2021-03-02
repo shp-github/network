@@ -13,3 +13,7 @@ package xml
 haarcascade_eye.xml
 haarcascade_eye_tree_eyeglasses.xml
 
+脸
+haarcascade_frontalface_alt.xml (效果更好一些)
+
+

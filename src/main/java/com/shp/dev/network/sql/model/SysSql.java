@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  * @Version: 1.0
  * @Description: TODO
  * @CreateTime: 2020/9/25 12:02
- * @PackageName: com.shp.dev.network.sql.model
+ * @PackageName: com.shp.dev.network8.0.sql.model
  * @ProjectName: network
  */
 @Data
