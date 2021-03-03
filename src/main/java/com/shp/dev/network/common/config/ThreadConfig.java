@@ -91,4 +91,18 @@ public class ThreadConfig {
         return executor;
     }
 
+    //异步线程池,如果不指定name值，则按methodName做beanName
+    @Bean(name = "redis")
+    public AsyncTaskExecutor redis() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(5);
+        executor.setKeepAliveSeconds(0);
+        executor.setQueueCapacity(0);
+        executor.setThreadNamePrefix("video-");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
+        return executor;
+    }
+
 }

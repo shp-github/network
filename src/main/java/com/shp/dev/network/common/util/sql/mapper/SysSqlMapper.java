@@ -16,6 +16,9 @@ import java.util.List;
 @Mapper
 public interface SysSqlMapper {
 
+    @Select("select * from tb_sys_sql")
+    List<SysSql> findAll();
+
     @Insert("INSERT INTO `tb_sys_sql`(`sql_name`,`sql_text`) VALUES(#{sqlName},#{sqlText})")
     Integer addSysSql(SysSql sql);
 

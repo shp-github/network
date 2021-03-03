@@ -22,6 +22,7 @@ import java.lang.management.ManagementFactory;
 @RequiredArgsConstructor
 public class StartedUpRunner  implements ApplicationRunner, ApplicationListener<WebServerInitializedEvent> {
     public static int serverPort;
+    public static String pid;
     @Override
     public void run(ApplicationArguments args) {
         String name = ManagementFactory.getRuntimeMXBean().getName();

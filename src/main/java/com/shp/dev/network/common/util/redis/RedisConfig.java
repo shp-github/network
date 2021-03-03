@@ -15,7 +15,10 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * @CreateBy: shp
@@ -31,12 +34,12 @@ import java.util.*;
 public class RedisConfig {
 
     private int defaultDb;
-    private List<Integer> dbs = Constant.REDIS_DBS;
 
     public static Map<Integer, RedisTemplate<Serializable, Object>> redisTemplateMap = new HashMap<>();
 
     @PostConstruct
-    public void initRedisTemp() throws Exception {
+    public void initRedisTemp() {
+        List<Integer> dbs = Constant.REDIS_DBS;
         log.info("###### START 初始化 Redis 连接池 START ######");
         defaultDb = dbs.get(0);
         for (Integer db : dbs) {
@@ -46,7 +49,7 @@ public class RedisConfig {
         log.info("###### END 初始化 Redis 连接池 END ######");
     }
 
-    public RedisTemplate<Serializable, Object> redisTemplateObject(Integer dbIndex) throws Exception {
+    public RedisTemplate<Serializable, Object> redisTemplateObject(Integer dbIndex) {
         RedisTemplate<Serializable, Object> redisTemplateObject = new RedisTemplate<Serializable, Object>();
         redisTemplateObject.setConnectionFactory(redisConnectionFactory(jedisPoolConfig(), dbIndex));
         setSerializer(redisTemplateObject);
@@ -56,7 +59,6 @@ public class RedisConfig {
 
     /**
      * 连接池配置信息
-     *
      * @return
      */
     public JedisPoolConfig jedisPoolConfig() {
@@ -78,7 +80,6 @@ public class RedisConfig {
 
     /**
      * jedis连接工厂
-     *
      * @param jedisPoolConfig
      * @return
      */
@@ -108,8 +109,9 @@ public class RedisConfig {
     private void setSerializer(RedisTemplate<Serializable, Object> template) {
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new StringRedisSerializer());
     }
-
 
     public RedisTemplate<Serializable, Object> getRedisTemplate(int db) {
         return redisTemplateMap.get(db);

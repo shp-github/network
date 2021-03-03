@@ -3,6 +3,8 @@ package com.shp.dev.network.common.controller;
 import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
+import com.shp.dev.network.common.util.quartz.QuartzUtil;
+import com.shp.dev.network.common.util.quartz.Quartz;
 import com.shp.dev.network.common.util.validation.Name;
 import com.shp.dev.network.common.util.sql.model.SysSql;
 import com.shp.dev.network.common.util.sql.service.ISysSqlService;
@@ -32,6 +34,8 @@ public class CommonController {
     private ICommonService commonService;
     @Autowired
     private ISysSqlService service;
+    @Autowired
+    private QuartzUtil quartzUtil;
 
     @RequestMapping(value = "/opsForValueSet", method = {RequestMethod.POST})
     @ApiOperation("插入redis值单个值")
@@ -118,6 +122,13 @@ public class CommonController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public ResultBean test() {
         int i = 1 / 0;
+        return ResultBean.success();
+    }
+
+
+    @RequestMapping(value="/addQuartz",method=RequestMethod.POST)
+    public ResultBean addQuartz(@RequestBody Quartz quartz) throws Exception {
+        quartzUtil.addQuartz(quartz);
         return ResultBean.success();
     }
 

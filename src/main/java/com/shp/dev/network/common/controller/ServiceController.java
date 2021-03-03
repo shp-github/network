@@ -12,21 +12,28 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * @CreateBy: shp
  * @Version: 1.0
- * @Description: TODO 更新接口专用
+ * @Description: TODO 服务控制
  * @CreateTime: 2020/12/15 19:30
  * @PackageName: com.shp.dev.network.common.controller
  * @ProjectName: network
  */
 @RestController
-@RequestMapping("/update")
-public class AController {
+@RequestMapping("/service")
+public class ServiceController {
+
     @Autowired
     private ICommonService commonService;
 
-    @ApiOperation("更新接口服务")
+    @ApiOperation("更新服务")
     @RequestMapping(value = "/updateService", method = RequestMethod.POST)
     public ResultBean updateService(MultipartFile file) {
         return commonService.updateService(file);
+    }
+
+    @ApiOperation("更新服务")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResultBean update(MultipartFile file) {
+        return commonService.update(file);
     }
 
 

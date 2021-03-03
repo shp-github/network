@@ -4,16 +4,16 @@ import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.util.ShpUtils;
 import com.shp.dev.network.common.util.fastdfs.FastDFSClient;
 import com.shp.dev.network.common.util.jdbc.JDBCUtils;
-import com.shp.dev.network.common.util.redis.Redis;
+import com.shp.dev.network.common.util.redis.RedisConfig;
 import com.shp.dev.network.common.util.sql.mapper.SysSqlMapper;
 import com.shp.dev.network.common.util.sql.model.SysSql;
 import com.shp.dev.network.common.util.sql.service.ISysSqlService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.Socket;
 import java.util.List;
 
 /**
@@ -26,10 +26,14 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class SysSqlService implements ISysSqlService {
 
     @Autowired
     private SysSqlMapper mapper;
+
+    @Autowired
+    private RedisConfig redisConfig;
 
     private final static String host = "47.92.213.36";
     private final static String port = "6379";
@@ -38,19 +42,15 @@ public class SysSqlService implements ISysSqlService {
         String sql = null;//最终执行的sql语句
         if (ShpUtils.isNull(parm.getSqlText())) {
             try {//获取sql语句
-                Socket socket = new Socket(host, Integer.valueOf(port));
-                Redis redis = new Redis(socket);
-                byte[] bytes = redis.call("GET", parm.getSqlName());
-                //如果redis中没有这个key或者为空则查询数据库获取并set进redis里
-                if (ShpUtils.isNull(bytes)) {
+                sql = (String) redisConfig.getRedisTemplate(0).opsForValue().get(parm.getSqlName());
+                if (ShpUtils.isNull(sql)) {
                     SysSql sysSql = mapper.queryBySqlName(parm);
                     String sqlText = sysSql.getSqlText();
-                    redis.call("SET", parm.getSqlName(), sqlText);
+                    redisConfig.getRedisTemplate(0).opsForValue().set(parm.getSqlName(), sqlText);
                     sql = sqlText;
-                } else {
-                    sql = new String(bytes);
                 }
             } catch (Exception e) {
+                log.error(e.getMessage());
                 sql = null;
             }
         }
@@ -90,17 +90,12 @@ public class SysSqlService implements ISysSqlService {
         String sql = null;//最终执行的sql语句
         if (ShpUtils.isNull(parm.getSqlText())) {
             try {//获取sql语句
-                Socket socket = new Socket(host, Integer.valueOf(port));
-                Redis redis = new Redis(socket);
-                byte[] bytes = redis.call("GET", parm.getSqlName());
-                //如果redis中没有这个key或者为空则查询数据库获取并set进redis里
-                if (ShpUtils.isNull(bytes)) {
+                sql = (String) redisConfig.getRedisTemplate(0).opsForValue().get(parm.getSqlName());
+                if (ShpUtils.isNull(sql)) {
                     SysSql sysSql = mapper.queryBySqlName(parm);
                     String sqlText = sysSql.getSqlText();
-                    redis.call("SET", parm.getSqlName(), sqlText);
+                    redisConfig.getRedisTemplate(0).opsForValue().set(parm.getSqlName(), sqlText);
                     sql = sqlText;
-                } else {
-                    sql = new String(bytes);
                 }
             } catch (Exception e) {
                 sql = null;
