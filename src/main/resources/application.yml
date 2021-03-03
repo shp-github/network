@@ -37,6 +37,12 @@ spring:
       ack-mode: manual_immediate
       missing-topics-fatal: false
 
+    # Elasticsearch
+  elasticsearch:
+     host: 127.0.0.1
+     port: 9200
+  #elasticsearch.rest.username=elastic
+  #elasticsearch.rest.password=Longshine01
   #配置rabbitMq 服务器
   rabbitmq:
     host: 127.0.0.1
@@ -256,3 +262,4 @@ aliyun.port: 22
 aliyun.username: root
 aliyun.password: sS123456
 aliyun.directory: /usr/local/test
+
