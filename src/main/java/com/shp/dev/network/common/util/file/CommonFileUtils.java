@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @CreateBy: shp
@@ -22,23 +23,21 @@ import java.util.Date;
 @Slf4j
 public class CommonFileUtils {
 
-
-
     /**
      * @CreateBy: shp
      * @version：1.0
      * @Description: TODO 保存文件
      * @CreateTime: 2021/1/19 21:12
-     * @param: object 源文件： 本地文件路径、 本地文件、 在线文件地址、 base64字符串
+     * @param: object 源文件： 本地文件路径、 本地文件、 在线文件地址、 base64字符串 （上传在线图片和base64字符串时需要传文件名，目的是获取文件后缀，因为其没有后缀）
      * @param: fileName 文件名称
      * @param: frist 路径开头
      * @param: last 路径结尾
      * @return: java.lang.String  返回文件所在地址 默认会创建年/月/日作为中间的文件夹
      */
-    public static String currencySaveFile(Object object, String fileName, String frist, String last) {
+    public static String saveFile(Object object, String fileName, String frist, String last) {
+        fileName = isNull(fileName) ? UUID.randomUUID().toString().replace("-", "") : fileName;
         return saveFile(object, createDirectory(frist, last) + fileName);
     }
-
 
     /**
      * @CreateBy: shp
@@ -50,19 +49,14 @@ public class CommonFileUtils {
      * @return: java.lang.String
      */
     public static String createDirectory(String frist, String last) {
-
         String path = "";
         if (noNull(frist)) {
             path += frist;
         }
-
         path += "/" + new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/";
-
         if (noNull(last)) {
             path += last + "/";
         }
-
-        //文件目录不存在则创建
         File dirFile = new File(path);
         if (!dirFile.exists()) {
             dirFile.mkdirs();
@@ -86,22 +80,30 @@ public class CommonFileUtils {
             if (object instanceof String) {
                 String str = (String) object;
                 File file = new File(str);
+                String suffix = getSuffix(object);
+                outFile += str.indexOf(suffix) != -1 ? "" : suffix;
                 //本地有此文件
                 if (file.exists()) {
                     return writeByFile(file, outFile);
                 } else {
-                    //转base64
+                    //保存在线图片
                     if (writeByURL(str, outFile) != null) {
                         return outFile;
                     } else {
-                        //保存在线图片
+                        //转base64
                         return writeByBase64(str, outFile);
                     }
                 }
             } else if (object instanceof File) {
-                return writeByFile((File) object, outFile);
+                File file = (File) object;
+                String suffix = getSuffix(object);
+                outFile += file.getName().indexOf(suffix) != -1 ? "" : suffix;
+                return writeByFile(file, outFile);
             } else if (object instanceof MultipartFile) {
-                return writeFileByMultipartFile((MultipartFile) object, outFile);
+                MultipartFile file = (MultipartFile) object;
+                String suffix = getSuffix(object);
+                outFile += file.getName().indexOf(suffix) != -1 ? "" : suffix;
+                return writeFileByMultipartFile(file, outFile);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -109,6 +111,28 @@ public class CommonFileUtils {
         }
         log.error("没有匹配保存文件的类型");
         return null;
+    }
+
+    public static String getSuffix(Object object) {
+        try {
+            if (object instanceof File) {
+                File file = (File) object;
+                return file.getName().substring(file.getName().indexOf("."));
+            } else if (object instanceof MultipartFile) {
+                MultipartFile file = (MultipartFile) object;
+                return file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
+            } else if (object instanceof String) {
+                File file = new File((String) object);
+                if(file.isFile()){
+                    return file.getName().substring(file.getName().indexOf("."));
+                }
+                return "";
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return "";
+        }
+        return "";
     }
 
     /**
@@ -120,13 +144,13 @@ public class CommonFileUtils {
      * @param: outFile
      * @return: java.lang.String
      */
-    public static String writeFileByMultipartFile(MultipartFile multipartFile, String outFile) {
+    public static String writeFileByMultipartFile(MultipartFile file, String outFile) {
         try {
-            if (isNull(multipartFile, outFile)) {
+            if (isNull(file, outFile)) {
                 log.error("参数为空或者文件不存在");
                 return null;
             }
-            InputStream is = multipartFile.getInputStream();
+            InputStream is = file.getInputStream();
             byte[] bs = new byte[1024];
             int len;
             OutputStream os = new FileOutputStream(outFile);
@@ -151,15 +175,15 @@ public class CommonFileUtils {
      * @param: outFile
      * @return: java.lang.String
      */
-    public static String writeByBase64(String base64, String outFile) {
+    public static String writeByBase64(String file, String outFile) {
         try {
-            if (isNull(base64, outFile)) {
+            if (isNull(file, outFile)) {
                 log.error("参数为空或者文件不存在");
                 return null;
             }
             BASE64Decoder decoder = new BASE64Decoder();
             OutputStream out = new FileOutputStream(outFile);
-            byte[] b = decoder.decodeBuffer(base64);
+            byte[] b = decoder.decodeBuffer(file);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {// 调整异常数据
                     b[i] += 256;
@@ -183,13 +207,13 @@ public class CommonFileUtils {
      * @param: outFile
      * @return: java.lang.String
      */
-    public static String writeByURL(String inFile, String outFile) {
+    public static String writeByURL(String file, String outFile) {
         try {
-            if (isNull(inFile, outFile)) {
+            if (isNull(file, outFile)) {
                 log.error("参数为空或者文件不存在");
                 return null;
             }
-            URL url = new URL(inFile);
+            URL url = new URL(file);
             URLConnection con = url.openConnection();
             InputStream is = con.getInputStream();
             byte[] bs = new byte[1024];
@@ -202,39 +226,9 @@ public class CommonFileUtils {
             is.close();
             return outFile;
         } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * @CreateBy: shp
-     * @version：1.0
-     * @Description: TODO 写文件到本地
-     * @CreateTime: 2021/1/19 18:02
-     * @param: filePath
-     * @param: outFile
-     * @return: java.lang.String
-     */
-    public static String writeByFilePath(String filePath, String outFile) {
-        try {
-            if (isNull(filePath, outFile)) {
-                log.error("参数为空或者文件不存在");
-                return null;
-            }
-            FileInputStream fis = new FileInputStream(filePath);
-            FileOutputStream fos = new FileOutputStream(outFile);
-            int len;
-            byte[] b = new byte[1024];
-            while ((len = fis.read(b)) != -1) {
-                fos.write(b, 0, len);
-            }
-            fos.close();
-            fis.close();
-        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }
-        return outFile;
     }
 
     /**
@@ -266,6 +260,19 @@ public class CommonFileUtils {
             return null;
         }
         return outFile;
+    }
+
+    /**
+     * @CreateBy: shp
+     * @version：1.0
+     * @Description: TODO 写文件到本地
+     * @CreateTime: 2021/1/19 18:02
+     * @param: filePath
+     * @param: outFile
+     * @return: java.lang.String
+     */
+    public static String writeByFile(String filePath, String outFile) {
+        return writeByFile(new File(filePath), outFile);
     }
 
     /**

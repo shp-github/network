@@ -4,7 +4,7 @@ import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.Base64;
 import com.shp.dev.network.common.util.ShpUtils;
-import com.shp.dev.network.common.util.file.UploadFileUtils;
+import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.image.ImageUtil;
 import com.shp.dev.network.common.util.minio.MinioClientUtils;
 import com.shp.dev.network.common.util.redis.RedisConfig;
@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @CreateBy: shp
@@ -134,36 +133,13 @@ public class CommonService implements ICommonService {
     }
 
     public ResultBean upload(MultipartFile file, String fileName, String frist, String last) {
-        String filePath = null;
-
         if (file.isEmpty() || shpUtils.isNull(file)) {
             return ResultBean.error("上传失败 文件为空");
         }
-
-        if (shpUtils.isNull(fileName)) {
-            fileName = UUID.randomUUID() + file.getOriginalFilename();
-        }
-
-        if (shpUtils.noNull(frist) && shpUtils.noNull(last)) {
-            filePath = UploadFileUtils.currencySaveFile(file, fileName, frist, last);
-        }
-
-        if (shpUtils.isNull(frist) && shpUtils.isNull(last)) {
-            filePath = UploadFileUtils.currencySaveFile(file, fileName);
-        }
-
-        if (shpUtils.noNull(frist) && shpUtils.isNull(last)) {
-            filePath = UploadFileUtils.currencySaveFileFrist(file, fileName, frist);
-        }
-
-        if (shpUtils.noNull(last) && shpUtils.isNull(frist)) {
-            filePath = UploadFileUtils.currencySaveFileLast(file, fileName, last);
-        }
-
+        String filePath = CommonFileUtils.saveFile(file, fileName, frist, last);
         if (filePath != null) {
             return ResultBean.success("上传成功", filePath);
         }
-
         return ResultBean.error("上传失败");
     }
 
