@@ -5,7 +5,7 @@ import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.validation.Name;
 import com.shp.dev.network.common.util.sql.model.SysSql;
-import com.shp.dev.network.common.util.sql.service.SysSqlService;
+import com.shp.dev.network.common.util.sql.service.ISysSqlService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class CommonController {
     @Autowired
     private ICommonService commonService;
     @Autowired
-    private SysSqlService service;
+    private ISysSqlService service;
 
     @RequestMapping(value = "/opsForValueSet", method = {RequestMethod.POST})
     @ApiOperation("插入redis值单个值")

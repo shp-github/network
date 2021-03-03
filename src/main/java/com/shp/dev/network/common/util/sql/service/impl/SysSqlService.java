@@ -1,4 +1,4 @@
-package com.shp.dev.network.common.util.sql.service;
+package com.shp.dev.network.common.util.sql.service.impl;
 
 import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.util.ShpUtils;
@@ -7,6 +7,7 @@ import com.shp.dev.network.common.util.jdbc.JDBCUtils;
 import com.shp.dev.network.common.util.redis.Redis;
 import com.shp.dev.network.common.util.sql.mapper.SysSqlMapper;
 import com.shp.dev.network.common.util.sql.model.SysSql;
+import com.shp.dev.network.common.util.sql.service.ISysSqlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +26,10 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class SysSqlService {
+public class SysSqlService implements ISysSqlService {
 
     @Autowired
     private SysSqlMapper mapper;
-
 
     private final static String host = "47.92.213.36";
     private final static String port = "6379";
