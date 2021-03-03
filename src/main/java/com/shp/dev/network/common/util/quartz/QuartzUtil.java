@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @CreateBy: Administrator
@@ -35,7 +35,9 @@ public class QuartzUtil {
      * @return: java.lang.String
      */
     public String addQuartz(Quartz quartz) throws Exception {
-        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(quartz.getStartTime());
+        //Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(quartz.getStartTime());
+        Date date = new Date();
+
         if (!CronExpression.isValidExpression(quartz.getCronExpression())) {
             log.error("表达式格式不正确");
             return "表达式格式不正确";
@@ -67,6 +69,10 @@ public class QuartzUtil {
     //恢复所有任务
     public void resumeAllJob() throws SchedulerException {
         scheduler.resumeAll();
+    }
+
+    List<String> getJobGroupNames() throws SchedulerException {
+        return scheduler.getJobGroupNames();
     }
 
     /**

@@ -51,7 +51,7 @@ public class QuartzController {
     )
     @RequestMapping(value = "/getJobState", method = RequestMethod.POST)
     public ResultBean getJobState(String name, String group) throws Exception {
-        return ResultBean.success(quartzUtil.getJobState(name, group).equalsIgnoreCase("NORMAL")?"服务正常！！!":"服务异常！！！");
+        return ResultBean.success(quartzUtil.getJobState(name, group).equalsIgnoreCase("NORMAL") ? "服务正常！！!" : "服务异常！！！");
     }
 
     @ApiOperation("暂停任务")
@@ -63,6 +63,7 @@ public class QuartzController {
     public ResultBean pauseJob(String name, String group) throws Exception {
         return ResultBean.success(quartzUtil.pauseJob(name, group));
     }
+
     @ApiOperation("恢复任务")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "名称", required = true, paramType = "query", dataType = "String"),
@@ -83,6 +84,12 @@ public class QuartzController {
     @RequestMapping(value = "/modifyJob", method = RequestMethod.POST)
     public ResultBean modifyJob(Quartz quartz) throws Exception {
         return ResultBean.success(quartzUtil.modifyJob(quartz));
+    }
+
+    @ApiOperation("查询组列表")
+    @RequestMapping(value = "/getJobGroupNames", method = RequestMethod.POST)
+    public ResultBean getJobGroupNames() throws Exception {
+        return ResultBean.success(quartzUtil.getJobGroupNames());
     }
 
 

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/service")
+@ApiOperation("更新服务")
 public class ServiceController {
 
     @Autowired
@@ -35,6 +36,7 @@ public class ServiceController {
     public ResultBean update(MultipartFile file) {
         return commonService.update(file);
     }
+
 
 
 }

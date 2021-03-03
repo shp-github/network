@@ -9,6 +9,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.lang.management.ManagementFactory;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @CreateBy: shp
@@ -20,13 +23,17 @@ import java.lang.management.ManagementFactory;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class StartedUpRunner  implements ApplicationRunner, ApplicationListener<WebServerInitializedEvent> {
+public class StartedUpRunner implements ApplicationRunner, ApplicationListener<WebServerInitializedEvent> {
     public static int serverPort;
     public static String pid;
+    public static String ip;
+
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws UnknownHostException {
         String name = ManagementFactory.getRuntimeMXBean().getName();
         String pid = name.split("@")[0];
+        InetAddress ip4 = Inet4Address.getLocalHost();
+        ip = ip4.getHostAddress();
         System.out.println("////////////////////////////////////////////////////////////////////\n" +
                 "//                          _ooOoo_                               //\n" +
                 "//                         o8888888o                              //\n" +
@@ -54,9 +61,11 @@ public class StartedUpRunner  implements ApplicationRunner, ApplicationListener<
         log.info("恭喜您，启动成功!");
         log.info("服务端口:{}", serverPort);
         log.info("进程ID:{}", pid);
-        log.info("接口文档地址:http://localhost:{}",serverPort);
+        log.info("服务IP:{}", ip);
+        log.info("接口文档地址:http://{}:{}", ip, serverPort);
         log.info("++++++++++++++++++++++++++++++++++++++++++++");
     }
+
     public int getPort() {
         return this.serverPort;
     }

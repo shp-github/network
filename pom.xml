@@ -518,6 +518,13 @@
                     </includes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.shp.dev.network.NetworkApplication</mainClass>
+                </configuration>
+            </plugin>
 
         </plugins>
 

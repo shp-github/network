@@ -195,7 +195,7 @@ public class CommonService implements ICommonService {
                     "<iframe id=\"mainContent\" width=\"100%\" height=\"100%\"></iframe>\n" +
                     "</body>\n" +
                     "<script>\n" +
-                    " window.open(\"http://localhost:8080/swagger-ui.html\", '_top');\n" +
+                    " window.open(\"http://" + StartedUpRunner.ip + ":" + StartedUpRunner.serverPort + "/swagger-ui.html\", '_top');\n" +
                     "</script>\n" +
                     "</html>");
         } catch (IOException e) {
@@ -206,7 +206,7 @@ public class CommonService implements ICommonService {
     }
 
 
-    public ResultBean updateService(MultipartFile file) {
+    public ResultBean update(MultipartFile file) {
 
         try {
 
@@ -234,18 +234,18 @@ public class CommonService implements ICommonService {
             Runtime.getRuntime().exec("bash " + shellName + " " + serverName + " " + logName + " " + serverName);
 
         } catch (Exception e) {
-            return ResultBean.error();
+            return ResultBean.error(e.getMessage());
         }
         return ResultBean.success();
     }
 
     @Override
-    public ResultBean update(MultipartFile file) {
+    public ResultBean updateService(MultipartFile file) {
         try {
             String serverPath = System.getProperty("user.dir") + File.separator;
             String serverName = file.getOriginalFilename();
-            String logName = serverName.substring(0,serverName.lastIndexOf(".")) + ".log";
-            String shellName = serverName.substring(0,serverName.lastIndexOf(".")) + ".sh";
+            String logName = serverName.substring(0, serverName.lastIndexOf(".")) + ".log";
+            String shellName = serverName.substring(0, serverName.lastIndexOf(".")) + ".sh";
             Runtime.getRuntime().exec("cd " + serverPath);
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(serverName));
             ClassPathResource cpr = new ClassPathResource("static/update.sh");
@@ -254,7 +254,7 @@ public class CommonService implements ICommonService {
             Runtime.getRuntime().exec("chmod 777 " + shellName);
             Runtime.getRuntime().exec("bash " + shellName + " " + serverName + " " + logName + " " + StartedUpRunner.pid);
         } catch (Exception e) {
-            return ResultBean.error();
+            return ResultBean.error(e.getMessage());
         }
         return ResultBean.success();
     }

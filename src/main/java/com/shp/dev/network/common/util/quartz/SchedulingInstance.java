@@ -57,6 +57,12 @@ public class SchedulingInstance implements Job {
             schedulingService.synchronizedRedis();
         }
 
+        if(jobKey.getName().equalsIgnoreCase("log")){
+            System.out.println("*************************");
+            System.out.println("执行*************************");
+            System.out.println("行*************************");
+        }
+
     }
 }
 

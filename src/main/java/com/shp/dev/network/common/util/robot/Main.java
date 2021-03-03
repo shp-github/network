@@ -8,8 +8,12 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,28 +34,62 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println();
-
-
-
+        for (Object ip : getIPs()) {
+            System.out.println(ip);
+        }
     }
 
-
-
+    public static ArrayList getIPs() {
+        ArrayList arrayList = new ArrayList();
+        boolean flag = false;
+        int count = 0;
+        Runtime r = Runtime.getRuntime();
+        Process p;
+        try {
+            p = r.exec("arp -a");
+            BufferedReader br = new BufferedReader(new InputStreamReader(p
+                    .getInputStream()));
+            String inline;
+            while ((inline = br.readLine()) != null) {
+                if (inline.indexOf("接口") > -1) {
+                    flag = !flag;
+                    if (!flag) {
+                        //碰到下一个"接口"退出循环
+                        break;
+                    }
+                }
+                if (flag) {
+                    count++;
+                    if (count > 2) {
+                        //有效IP
+                        String[] str = inline.split(" {4}");
+                        arrayList.add(str[0]);
+                    }
+                }
+                System.out.println(inline);
+            }
+            br.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println(arrayList);
+        return arrayList;
+    }
 
 
     public static void main3(String[] args) {
 
         System.out.println(File.separator);
 
-        String outFIle="asdgag.jpg";
+        String outFIle = "asdgag.jpg";
         System.out.println(outFIle);
 
         File file = new File(outFIle);
 
-        outFIle=file.getPath();
+        outFIle = file.getPath();
 
-        String substring = outFIle.substring(outFIle.indexOf(".")+1);
+        String substring = outFIle.substring(outFIle.indexOf(".") + 1);
         System.out.println(substring);
 
     }
@@ -67,9 +105,9 @@ public class Main {
 
         //String divStr = HttpRequestUrl.sendPost("http://10.8.240.23:10086/video_feed", "picture=" + base + "&name=" + UUID.randomUUID().toString() + "&date=" + new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()) + System.currentTimeMillis());
         long fristTime = System.currentTimeMillis();
-        String divStr = HttpRequestUrl.sendPost("http://123.182.146.55:10086/video_feed", "picture=" + base + "&name=" + UUID.randomUUID().toString() + "&date=" + new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()) + System.currentTimeMillis()+"&image_read="+s);
+        String divStr = HttpRequestUrl.sendPost("http://123.182.146.55:10086/video_feed", "picture=" + base + "&name=" + UUID.randomUUID().toString() + "&date=" + new SimpleDateFormat("yyy-MM-dd HH:mm:ss").format(new Date()) + System.currentTimeMillis() + "&image_read=" + s);
         System.out.println(divStr);
-        System.out.println(System.currentTimeMillis()-fristTime);
+        System.out.println(System.currentTimeMillis() - fristTime);
         net.sf.json.JSONObject jsonObject = net.sf.json.JSONObject.fromObject(divStr);
 
         System.out.println(jsonObject);
@@ -87,19 +125,18 @@ public class Main {
     }
 
 
-
     public static void main2(String[] args) {
 
         UUID uuid = UUID.randomUUID();
 
-        String message ="{\"token\":\"a0facb44-1796-4d98-8b43-ce63ae192ee8\",\"status\":\"send\"}";
+        String message = "{\"token\":\"a0facb44-1796-4d98-8b43-ce63ae192ee8\",\"status\":\"send\"}";
 
         //a0facb44-1796-4d98-8b43-ce63ae192ee8
         //5485c6b9-26be-4296-8dcf-0788bdad8fcd
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("token",uuid);
-        jsonObject.put("status","accept");
+        jsonObject.put("token", uuid);
+        jsonObject.put("status", "accept");
         //jsonObject.put("status","send");
         //jsonObject.put("message","黄发，啥时候发工资啊？");
 
