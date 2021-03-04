@@ -4,6 +4,7 @@ import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.config.StartedUpRunner;
 import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.Base64;
+import com.shp.dev.network.common.util.DateUtils;
 import com.shp.dev.network.common.util.ShpUtils;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.image.ImageUtil;
@@ -207,52 +208,76 @@ public class CommonService implements ICommonService {
 
 
     public ResultBean update(MultipartFile file) {
-
         try {
-
-            //假设保存接口的地址是/usr/local/project/目录
+            log.info("正在更新接口");
             String serverPath = System.getProperty("user.dir") + File.separator;
-            //服务名称
             String serverName = file.getOriginalFilename();
-            //日志名称
             String logName = serverName.substring(0, serverName.length() - 3) + "log";
-            //shell脚本名称
             String shellName = serverName.substring(0, serverName.length() - 3) + "sh";
-            //模拟linux命令操作
             Runtime.getRuntime().exec("cd " + serverPath);
             Runtime.getRuntime().exec("rm -rf " + serverName + " " + logName);
-            //复制jar包到程序运行所在目录
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(serverName));
-
-            //复制shell脚本到程序运行所在目录
-            ClassPathResource cpr = new ClassPathResource("static/updateService.sh");
-            InputStream in = cpr.getInputStream();
-            FileUtils.copyInputStreamToFile(in, new File(shellName));
-
-            //执行shell脚本
-            Runtime.getRuntime().exec("chmod 777 " + shellName);
-            Runtime.getRuntime().exec("bash " + shellName + " " + serverName + " " + logName + " " + serverName);
-
-        } catch (Exception e) {
-            return ResultBean.error(e.getMessage());
-        }
-        return ResultBean.success();
-    }
-
-    @Override
-    public ResultBean updateService(MultipartFile file) {
-        try {
-            String serverPath = System.getProperty("user.dir") + File.separator;
-            String serverName = file.getOriginalFilename();
-            String logName = serverName.substring(0, serverName.lastIndexOf(".")) + ".log";
-            String shellName = serverName.substring(0, serverName.lastIndexOf(".")) + ".sh";
-            Runtime.getRuntime().exec("cd " + serverPath);
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(serverName));
             ClassPathResource cpr = new ClassPathResource("static/update.sh");
             InputStream in = cpr.getInputStream();
             FileUtils.copyInputStreamToFile(in, new File(shellName));
             Runtime.getRuntime().exec("chmod 777 " + shellName);
-            Runtime.getRuntime().exec("bash " + shellName + " " + serverName + " " + logName + " " + StartedUpRunner.pid);
+            Runtime.getRuntime().exec("bash " + shellName + " " + serverName + " " + logName + " " + serverName);
+        } catch (Exception e) {
+            return ResultBean.error(e.getMessage());
+        }
+        return ResultBean.success("更新成功，程序正在启动，请稍后！！！");
+    }
+
+    @Override
+    public ResultBean restart() {
+        try {
+            log.info("正在重启接口");
+            String serverPath = System.getProperty("user.dir") + File.separator;
+            String pn = "network-"+ DateUtils.getCustomizeDateTime("MMdd");
+            String logName = pn + ".log";
+            String shellName = pn + "-restart.sh";
+            String serverName = pn + ".jar";
+            Runtime.getRuntime().exec("cd " + serverPath);
+            ClassPathResource cpr = new ClassPathResource("static/restart.sh");
+            InputStream in = cpr.getInputStream();
+            FileUtils.copyInputStreamToFile(in, new File(shellName));
+            Runtime.getRuntime().exec("chmod 777 "+shellName);
+            Runtime.getRuntime().exec("bash " + shellName + " "+ StartedUpRunner.pid+" "+ serverName + " " + logName);
+            return ResultBean.success("重启成功请稍后！！！");
+        } catch (Exception e) {
+            return ResultBean.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultBean updateService(MultipartFile file) {
+        try {
+            log.info("正在更新接口");
+            String serverPath = System.getProperty("user.dir") + File.separator;
+            String serverName = file.getOriginalFilename();
+            String logName = serverName.substring(0, serverName.lastIndexOf(".")) + ".log";
+            String shellName = serverName.substring(0, serverName.lastIndexOf(".")) + "-updateService.sh";
+            Runtime.getRuntime().exec("cd " + serverPath);
+            String str="";
+            File jar=new File(serverName);
+            str+=jar.exists()?"jar包已存在 ":"";
+            File shell=new File(shellName);
+            str+=shell.exists()?"shell脚本已存在 ":"";
+            File log=new File(logName);
+            str+=log.exists()?"log日志已存在 ":"";
+            if(ShpUtils.noNull(str)){
+                Runtime.getRuntime().exec("rm -rf " + serverName + " " + logName);
+            }
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(serverName));
+            ClassPathResource cpr = new ClassPathResource("static/updateService.sh");
+            InputStream in = cpr.getInputStream();
+            FileUtils.copyInputStreamToFile(in, new File(shellName));
+            Runtime.getRuntime().exec("chmod 777 " + shellName);
+            String bash="bash " + shellName + " "+ StartedUpRunner.pid+" "+ serverName + " " + logName;
+            Runtime.getRuntime().exec(bash);
+            if(ShpUtils.noNull(str)){
+                return ResultBean.success(str+"--"+bash+" ，更新成功！！！");
+            }
         } catch (Exception e) {
             return ResultBean.error(e.getMessage());
         }

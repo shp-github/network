@@ -34,10 +34,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        for (Object ip : getIPs()) {
-            System.out.println(ip);
-        }
+
+
+
     }
+
+
+
+
+
 
     public static ArrayList getIPs() {
         ArrayList arrayList = new ArrayList();

@@ -1,5 +1,6 @@
 package com.shp.dev.network.common.util.quartz;
 
+import com.shp.dev.network.common.service.ICommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class SchedulingInstance implements Job {
 
     @Autowired
     private SchedulingService schedulingService;
+
+    @Autowired
+    private ICommonService commonService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -53,15 +57,17 @@ public class SchedulingInstance implements Job {
        log.info("当前任务的执行时间:" + simpleDateFormat.format(jobExecutionContext.getFireTime()));
        log.info("下次任务的执行时间:" + simpleDateFormat.format(jobExecutionContext.getNextFireTime()));
 
+       //把sql表中的数据同步到redis中
         if(jobKey.getName().equalsIgnoreCase("synchronizedRedis")){
             schedulingService.synchronizedRedis();
         }
 
-        if(jobKey.getName().equalsIgnoreCase("log")){
-            System.out.println("*************************");
-            System.out.println("执行*************************");
-            System.out.println("行*************************");
+        //重启接口
+        if(jobKey.getName().equalsIgnoreCase("restart")){
+            commonService.restart();
         }
+
+
 
     }
 }

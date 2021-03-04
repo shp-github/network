@@ -16,31 +16,35 @@ import java.util.Map;
  * @ProjectName: network
  */
 
- public interface ICommonService {
+public interface ICommonService {
 
-     ResultBean opsForValueSet(String key, String value, Integer db);
+    ResultBean opsForValueSet(String key, String value, Integer db);
 
-     ResultBean opsForValueGet(String key, Integer db);
+    ResultBean opsForValueGet(String key, Integer db);
 
-     ResultBean opsForListSet(String key, List list, Integer db);
+    ResultBean opsForListSet(String key, List list, Integer db);
 
-     ResultBean opsForListGet(String key, Integer db);
+    ResultBean opsForListGet(String key, Integer db);
 
-     ResultBean opsForHashGet(String key, Integer db);
+    ResultBean opsForHashGet(String key, Integer db);
 
-     ResultBean opsForHashSet(String key, Map map, Integer db);
+    ResultBean opsForHashSet(String key, Map map, Integer db);
 
-     ResultBean toBase64(MultipartFile file);
+    ResultBean toBase64(MultipartFile file);
 
-     ResultBean upload(MultipartFile file, String fileName, String frist, String last);
+    ResultBean upload(MultipartFile file, String fileName, String frist, String last);
 
-     ResultBean code();
+    ResultBean code();
 
-     ResultBean uploadMinio(String fileName, String objectName);
+    ResultBean uploadMinio(String fileName, String objectName);
 
-     ResultBean updateService(MultipartFile file);
+    ResultBean updateService(MultipartFile file);
 
-     void to(HttpServletResponse res);
+    void to(HttpServletResponse res);
 
-     ResultBean update(MultipartFile file);
+    ResultBean update(MultipartFile file);
+
+    //重启当前服务
+    ResultBean restart();
+
 }

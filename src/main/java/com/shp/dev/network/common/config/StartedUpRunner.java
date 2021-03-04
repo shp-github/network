@@ -31,7 +31,7 @@ public class StartedUpRunner implements ApplicationRunner, ApplicationListener<W
     @Override
     public void run(ApplicationArguments args) throws UnknownHostException {
         String name = ManagementFactory.getRuntimeMXBean().getName();
-        String pid = name.split("@")[0];
+        pid = name.split("@")[0];
         InetAddress ip4 = Inet4Address.getLocalHost();
         ip = ip4.getHostAddress();
         System.out.println("////////////////////////////////////////////////////////////////////\n" +

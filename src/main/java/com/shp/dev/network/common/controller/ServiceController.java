@@ -25,16 +25,23 @@ public class ServiceController {
     @Autowired
     private ICommonService commonService;
 
-    @ApiOperation("更新服务")
+
+    @ApiOperation("更新服务旧版")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResultBean update(MultipartFile file) {
+        return commonService.update(file);
+    }
+
+    @ApiOperation("更新服务新版")
     @RequestMapping(value = "/updateService", method = RequestMethod.POST)
     public ResultBean updateService(MultipartFile file) {
         return commonService.updateService(file);
     }
 
-    @ApiOperation("更新服务")
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResultBean update(MultipartFile file) {
-        return commonService.update(file);
+    @ApiOperation("重启服务")
+    @RequestMapping(value = "/restart", method = RequestMethod.POST)
+    public ResultBean restart() {
+        return commonService.restart();
     }
 
 
