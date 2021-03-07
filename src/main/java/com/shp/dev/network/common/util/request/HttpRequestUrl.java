@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @CreateBy: shp
@@ -18,6 +19,49 @@ import java.util.Map;
  * @ProjectName: wisdomeyeapi0114
  */
 public class HttpRequestUrl {
+
+
+    public static void main(String[] args) {
+
+        List<String> strings = ConcurrentRun("http://localhost:8081/common/getDateTime", "", 10000);
+        for (String string : strings) {
+            System.out.println(string);
+        }
+
+    }
+
+
+    public static CopyOnWriteArrayList<String> ConcurrentRun(String url, String parm, Integer max) {
+        CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList();
+        try {
+            for (int i = 0; i < max; i++) {
+                Concurrent concurrent = new Concurrent();
+                concurrent.url = url;
+                concurrent.parm = parm;
+                concurrent.start();
+                concurrent.join();
+                list.add(concurrent.getResult());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+    public static class Concurrent extends Thread {
+        static String url;
+        static String parm;
+        static String result;
+
+        @Override
+        public void run() {
+            result = HttpRequestUrl.sendPost(url, parm);
+        }
+
+        public static String getResult() {
+            return result;
+        }
+    }
 
 
     /**
@@ -138,6 +182,7 @@ public class HttpRequestUrl {
 
     /**
      * 向指定 URL 发送POST方法的请求
+     *
      * @param url   发送请求的 URL
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果

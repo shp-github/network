@@ -23,6 +23,12 @@ import java.util.regex.Pattern;
  */
 public class ToBash64 {
 
+    public static void main(String[] args) {
+
+
+
+    }
+
     /**
      * @CreateBy: shp
      * @version：1.0

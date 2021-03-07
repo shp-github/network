@@ -1,6 +1,8 @@
 package com.shp.dev.network.common.util;
 
+import com.shp.dev.network.common.util.request.HttpRequestUrl;
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -25,6 +27,21 @@ import java.util.Iterator;
  * @ProjectName: ai
  */
 public class Base64Utils {
+
+    public static void main(String[] args) {
+
+        String baseByFile = getBaseByFile("F:\\jd-gui.exe");
+        System.out.println(baseByFile);
+
+        JSONObject jsonParam=new JSONObject();
+        jsonParam.put("base64",baseByFile);
+
+        String jsonData = HttpRequestUrl.getJsonData(jsonParam, "http://192.168.176.1:8081/common/base2file");
+        System.out.println(jsonData);
+
+
+
+    }
 
     /**
      * @CreateBy: shp

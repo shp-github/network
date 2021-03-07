@@ -6,13 +6,14 @@ import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.Base64;
 import com.shp.dev.network.common.util.DateUtils;
 import com.shp.dev.network.common.util.ShpUtils;
-import com.shp.dev.network.common.util.code.util.GenUtils;
 import com.shp.dev.network.common.util.code.MongoManager;
 import com.shp.dev.network.common.util.code.dao.GeneratorDao;
+import com.shp.dev.network.common.util.code.util.GenUtils;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.image.ImageUtil;
 import com.shp.dev.network.common.util.minio.MinioClientUtils;
 import com.shp.dev.network.common.util.redis.RedisConfig;
+import com.shp.dev.network.common.util.request.HttpRequestUrl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -30,6 +31,7 @@ import java.awt.image.RenderedImage;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -127,17 +129,6 @@ public class CommonService implements ICommonService {
         }
     }
 
-    public ResultBean toBase64(MultipartFile file) {
-        try {
-            BASE64Encoder bEncoder = new BASE64Encoder();
-            String[] suffixArra = file.getOriginalFilename().split("\\.");
-            String preffix = "data:image/jpg;base64,".replace("jpg", suffixArra[suffixArra.length - 1]);
-            String image = preffix + bEncoder.encode(file.getBytes()).replaceAll("[\\s*\t\n\r]", "");
-            return ResultBean.success("转base64成功", image.substring(22));
-        } catch (Exception e) {
-            return ResultBean.error("转base64失败" + e.getMessage());
-        }
-    }
 
     public ResultBean upload(MultipartFile file, String fileName, String frist, String last) {
         if (file.isEmpty() || shpUtils.isNull(file)) {
@@ -165,6 +156,70 @@ public class CommonService implements ICommonService {
         } catch (Exception e) {
             return ResultBean.error(e.getMessage());
         }
+    }
+
+    public ResultBean toBase64(MultipartFile file) {
+        try {
+            BASE64Encoder bEncoder = new BASE64Encoder();
+            String[] suffixArra = file.getOriginalFilename().split("\\.");
+            String preffix = "data:image/jpg;base64,".replace("jpg", suffixArra[suffixArra.length - 1]);
+            String image = preffix + bEncoder.encode(file.getBytes()).replaceAll("[\\s*\t\n\r]", "");
+            return ResultBean.success("转base64成功", image.substring(22));
+        } catch (Exception e) {
+            return ResultBean.error("转base64失败" + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultBean file2base(MultipartFile file) {
+        try {
+            return ResultBean.success("转base64成功", new BASE64Encoder().encode(file.getBytes()).replaceAll("[\\s*\t\n\r]", ""));
+        } catch (Exception e) {
+            return ResultBean.error("转base64失败" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void base2file(String base64, HttpServletResponse res) {
+        try {
+            PrintWriter p = null;
+            String s = CommonFileUtils.saveFile(base64, null, null, null);
+            System.out.println(s);
+            p = res.getWriter();
+            p.print(s);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultBean shell(String str) {
+        try {
+            Runtime.getRuntime().exec(str);
+        } catch (Exception e) {
+            return ResultBean.error(e.getMessage());
+        }
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean request(String url, String parm) {
+        try {
+            return ResultBean.success(HttpRequestUrl.sendPost(url, parm));
+        } catch (Exception e) {
+            return ResultBean.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultBean getDateTime() {
+        return ResultBean.success(DateUtils.getDateTime());
+    }
+
+    @Override
+    public ResultBean concurrentRequest(String url, String parm, Integer max) {
+        CopyOnWriteArrayList<String> strings = HttpRequestUrl.ConcurrentRun(url, parm, max);
+        return ResultBean.success(strings);
     }
 
     public ResultBean uploadMinio(String fileName, String objectName) {

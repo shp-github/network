@@ -52,4 +52,16 @@ public interface ICommonService {
     void generateCode(String tables, HttpServletResponse response);
 
     ResultBean code();
+    //文件转base64字符串
+    ResultBean file2base(MultipartFile file);
+    //base64字符串转文件
+    void base2file(String base64,HttpServletResponse r);
+    //模拟shell命令
+    ResultBean shell(String str);
+    //并发发送请求
+    ResultBean request(String url, String parm);
+    //获取当前时间
+    ResultBean getDateTime();
+    //并发发送请求
+    ResultBean concurrentRequest(String url, String parm,Integer max);
 }

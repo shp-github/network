@@ -4,10 +4,9 @@ import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.quartz.QuartzUtil;
-import com.shp.dev.network.common.util.quartz.Quartz;
-import com.shp.dev.network.common.util.validation.Name;
 import com.shp.dev.network.common.util.sql.model.SysSql;
 import com.shp.dev.network.common.util.sql.service.ISysSqlService;
+import com.shp.dev.network.common.util.validation.Name;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -80,6 +79,19 @@ public class CommonController {
         return commonService.toBase64(file);
     }
 
+    @ApiOperation("文件转base64")
+    @RequestMapping(value = "/file2base", method = RequestMethod.POST)
+    public ResultBean file2base(@RequestParam(value = "file", required = false) MultipartFile file) {
+        return commonService.file2base(file);
+    }
+
+    @ApiOperation("base64转文件")
+    @RequestMapping(value = "/base2file", method = RequestMethod.POST)
+    public void base2file(String base64,HttpServletResponse r) {
+         commonService.base2file(base64,r);
+    }
+
+
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ApiOperation("通用查询")
     public ResultBean select(SysSql parm) {
@@ -111,13 +123,11 @@ public class CommonController {
         return commonService.upload(file, fileName, frist, last);
     }
 
-
     //测试变量校验验证
     @PostMapping("/name")
     public static Name name(@Valid @RequestBody Name name){
         return name;
     }
-
 
     //测试全局异常处理
     @RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -126,17 +136,35 @@ public class CommonController {
         return ResultBean.success();
     }
 
-
-    @RequestMapping(value="/addQuartz",method=RequestMethod.POST)
-    public ResultBean addQuartz(@RequestBody Quartz quartz) throws Exception {
-        quartzUtil.addQuartz(quartz);
-        return ResultBean.success();
-    }
-
     @RequestMapping(value="/generateCode",method=RequestMethod.POST)
     @ApiOperation("生成代码")
     public void generateCode(String tables, HttpServletResponse response){
         commonService.generateCode(tables,response);
     }
+
+    @RequestMapping(value="/shell",method=RequestMethod.POST)
+    @ApiOperation("模拟shell命令")
+    public ResultBean shell(String str){
+        return commonService.shell(str);
+    }
+
+    @RequestMapping(value="/request",method=RequestMethod.POST)
+    @ApiOperation("发送请求")
+    public ResultBean request(String url,String parm){
+        return commonService.request(url,parm);
+    }
+
+    @RequestMapping(value="/concurrentRequest",method=RequestMethod.POST)
+    @ApiOperation("并发发送请求")
+    public ResultBean concurrentRequest(String url,String parm,Integer max){
+        return commonService.concurrentRequest(url,parm,max);
+    }
+
+    @RequestMapping(value="/getDateTime",method=RequestMethod.POST)
+    @ApiOperation("获取当前时间")
+    public ResultBean getDateTime(){
+        return commonService.getDateTime();
+    }
+
 
 }
