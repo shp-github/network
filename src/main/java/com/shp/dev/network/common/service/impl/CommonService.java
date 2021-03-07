@@ -6,12 +6,16 @@ import com.shp.dev.network.common.service.ICommonService;
 import com.shp.dev.network.common.util.Base64;
 import com.shp.dev.network.common.util.DateUtils;
 import com.shp.dev.network.common.util.ShpUtils;
+import com.shp.dev.network.common.util.code.util.GenUtils;
+import com.shp.dev.network.common.util.code.MongoManager;
+import com.shp.dev.network.common.util.code.dao.GeneratorDao;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.image.ImageUtil;
 import com.shp.dev.network.common.util.minio.MinioClientUtils;
 import com.shp.dev.network.common.util.redis.RedisConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,12 +27,10 @@ import sun.misc.BASE64Encoder;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @CreateBy: shp
@@ -51,6 +53,9 @@ public class CommonService implements ICommonService {
 
     @Autowired
     RedisConfig redisConfig;
+
+    @Autowired
+    private GeneratorDao generatorDao;
 
     public ResultBean opsForValueSet(String key, String value, Integer db) {
         try {
@@ -145,7 +150,7 @@ public class CommonService implements ICommonService {
         return ResultBean.error("上传失败");
     }
 
-
+    @Override
     public ResultBean code() {
         try {
             // 转换流信息写出
@@ -217,7 +222,7 @@ public class CommonService implements ICommonService {
             Runtime.getRuntime().exec("cd " + serverPath);
             Runtime.getRuntime().exec("rm -rf " + serverName + " " + logName);
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(serverName));
-            ClassPathResource cpr = new ClassPathResource("static/update.sh");
+            ClassPathResource cpr = new ClassPathResource("shell/update.sh");
             InputStream in = cpr.getInputStream();
             FileUtils.copyInputStreamToFile(in, new File(shellName));
             Runtime.getRuntime().exec("chmod 777 " + shellName);
@@ -233,21 +238,22 @@ public class CommonService implements ICommonService {
         try {
             log.info("正在重启接口");
             String serverPath = System.getProperty("user.dir") + File.separator;
-            String pn = "network-"+ DateUtils.getCustomizeDateTime("MMdd");
+            String pn = "network-" + DateUtils.getCustomizeDateTime("MMdd");
             String logName = pn + ".log";
             String shellName = pn + "-restart.sh";
             String serverName = pn + ".jar";
             Runtime.getRuntime().exec("cd " + serverPath);
-            ClassPathResource cpr = new ClassPathResource("static/restart.sh");
+            ClassPathResource cpr = new ClassPathResource("shell/restart.sh");
             InputStream in = cpr.getInputStream();
             FileUtils.copyInputStreamToFile(in, new File(shellName));
-            Runtime.getRuntime().exec("chmod 777 "+shellName);
-            Runtime.getRuntime().exec("bash " + shellName + " "+ StartedUpRunner.pid+" "+ serverName + " " + logName);
+            Runtime.getRuntime().exec("chmod 777 " + shellName);
+            Runtime.getRuntime().exec("bash " + shellName + " " + StartedUpRunner.pid + " " + serverName + " " + logName);
             return ResultBean.success("重启成功请稍后！！！");
         } catch (Exception e) {
             return ResultBean.error(e.getMessage());
         }
     }
+
 
     @Override
     public ResultBean updateService(MultipartFile file) {
@@ -258,29 +264,78 @@ public class CommonService implements ICommonService {
             String logName = serverName.substring(0, serverName.lastIndexOf(".")) + ".log";
             String shellName = serverName.substring(0, serverName.lastIndexOf(".")) + "-updateService.sh";
             Runtime.getRuntime().exec("cd " + serverPath);
-            String str="";
-            File jar=new File(serverName);
-            str+=jar.exists()?"jar包已存在 ":"";
-            File shell=new File(shellName);
-            str+=shell.exists()?"shell脚本已存在 ":"";
-            File log=new File(logName);
-            str+=log.exists()?"log日志已存在 ":"";
-            if(ShpUtils.noNull(str)){
+            String str = "";
+            File jar = new File(serverName);
+            str += jar.exists() ? "jar包已存在 " : "";
+            File shell = new File(shellName);
+            str += shell.exists() ? "shell脚本已存在 " : "";
+            File log = new File(logName);
+            str += log.exists() ? "log日志已存在 " : "";
+            if (ShpUtils.noNull(str)) {
                 Runtime.getRuntime().exec("rm -rf " + serverName + " " + logName);
             }
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(serverName));
-            ClassPathResource cpr = new ClassPathResource("static/updateService.sh");
+            ClassPathResource cpr = new ClassPathResource("shell/updateService.sh");
             InputStream in = cpr.getInputStream();
             FileUtils.copyInputStreamToFile(in, new File(shellName));
             Runtime.getRuntime().exec("chmod 777 " + shellName);
-            String bash="bash " + shellName + " "+ StartedUpRunner.pid+" "+ serverName + " " + logName;
+            String bash = "bash " + shellName + " " + StartedUpRunner.pid + " " + serverName + " " + logName;
             Runtime.getRuntime().exec(bash);
-            if(ShpUtils.noNull(str)){
-                return ResultBean.success(str+"--"+bash+" ，更新成功！！！");
+            if (ShpUtils.noNull(str)) {
+                return ResultBean.success(str + "--" + bash + " ，更新成功！！！");
             }
         } catch (Exception e) {
             return ResultBean.error(e.getMessage());
         }
         return ResultBean.success();
     }
+
+    @Override
+    public ResultBean hotUpdate(MultipartFile file) {
+        String aClass = CommonFileUtils.saveFile(file, null, "/usr/local/project", "class");
+        return ResultBean.success("请执行：redefine " + aClass);
+    }
+
+    @Override
+    public void generateCode(String tables, HttpServletResponse response) {
+        try {
+            byte[] data = generatorCode(tables.split(","));
+            response.reset();
+            response.setHeader("Content-Disposition", "attachment; filename=\"renren.zip\"");
+            response.addHeader("Content-Length", "" + data.length);
+            response.setContentType("application/octet-stream; charset=UTF-8");
+            IOUtils.write(data, response.getOutputStream());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    public byte[] generatorCode(String[] tableNames) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ZipOutputStream zip = new ZipOutputStream(outputStream);
+        for (String tableName : tableNames) {
+            //查询表信息
+            Map<String, String> table = queryTable(tableName);
+            //查询列信息
+            List<Map<String, String>> columns = queryColumns(tableName);
+            //生成代码
+            GenUtils.generatorCode(table, columns, zip);
+        }
+        if (MongoManager.isMongo()) {
+            GenUtils.generatorMongoCode(tableNames, zip);
+        }
+
+        IOUtils.closeQuietly(zip);
+        return outputStream.toByteArray();
+    }
+
+    public Map<String, String> queryTable(String tableName) {
+        return generatorDao.queryTable(tableName);
+    }
+
+    public List<Map<String, String>> queryColumns(String tableName) {
+        return generatorDao.queryColumns(tableName);
+    }
+
+
 }

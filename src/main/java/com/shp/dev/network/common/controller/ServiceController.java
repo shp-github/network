@@ -44,6 +44,18 @@ public class ServiceController {
         return commonService.restart();
     }
 
+    @ApiOperation("测试热更新")
+    @RequestMapping(value = "/testUpdate", method = RequestMethod.POST)
+    public ResultBean testUpdate() {
+        return ResultBean.success("bbbbbbbbbb");
+    }
+
+    @ApiOperation("热更新 服务重启就会恢复之间的状态")
+    @RequestMapping(value = "/hotUpdate", method = RequestMethod.POST)
+    public ResultBean hotUpdate(MultipartFile file) {
+        return commonService.hotUpdate(file);
+    }
+
 
 
 }

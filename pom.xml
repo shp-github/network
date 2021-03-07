@@ -38,10 +38,68 @@
         <freemaker.version>2.3.23</freemaker.version>
         <jsoup.version>1.10.2</jsoup.version>
         <elasticsearch.version>7.8.0</elasticsearch.version>
+        <velocity.version>1.7</velocity.version>
+        <commons.configuration.version>1.10</commons.configuration.version>
+        <mssql.version>4.0</mssql.version>
+        <mysql.version>8.0.17</mysql.version>
+        <oracle.version>11.2.0.3</oracle.version>
+        <mongo.version>3.11.0</mongo.version>
     </properties>
 
     <dependencies>
 
+        <!-- mysql驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+<!--        &lt;!&ndash; oracle驱动 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.oracle</groupId>-->
+<!--            <artifactId>ojdbc6</artifactId>-->
+<!--            <version>${oracle.version}</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; sqlserver驱动 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.microsoft.sqlserver</groupId>-->
+<!--            <artifactId>sqljdbc4</artifactId>-->
+<!--            <version>${mssql.version}</version>-->
+<!--        </dependency>-->
+        <!-- postgresql驱动 -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <!-- mongo驱动 -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${mongo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>${commons.configuration.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>velocity</artifactId>
+            <groupId>org.apache.velocity</groupId>
+            <version>${velocity.version}</version>
+        </dependency>
+        <!--MybatisGenerator的依赖jar包-->
+        <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <!--热更新-->
+        <dependency>
+            <groupId>com.taobao.arthas</groupId>
+            <artifactId>arthas-spring-boot-starter</artifactId>
+            <version>3.4.5</version>
+        </dependency>
         <!--任务调度-->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -456,12 +514,6 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>${pagehelper.version}</version>
         </dependency>
-        <!--mysql依赖-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
         <!--springweb-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -518,11 +570,33 @@
                     </includes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.shp.dev.network.NetworkApplication</mainClass>
+                </configuration>
+            </plugin>
+
+            <!--MybatisGenerator的启动插件-->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <!--jar包去生成对应类 需要连接数据库 数据连接的版本和项目中的一致-->
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${mysql.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <!--MBG配置文件的路径 -->
+                    <configurationFile>${basedir}/src/main/resources/generatorConfig.xml</configurationFile>
+                    <overwrite>true</overwrite>
                 </configuration>
             </plugin>
 

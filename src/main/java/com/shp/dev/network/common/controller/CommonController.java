@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -132,5 +133,10 @@ public class CommonController {
         return ResultBean.success();
     }
 
+    @RequestMapping(value="/generateCode",method=RequestMethod.POST)
+    @ApiOperation("生成代码")
+    public void generateCode(String tables, HttpServletResponse response){
+        commonService.generateCode(tables,response);
+    }
 
 }

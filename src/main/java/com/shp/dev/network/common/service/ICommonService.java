@@ -34,8 +34,6 @@ public interface ICommonService {
 
     ResultBean upload(MultipartFile file, String fileName, String frist, String last);
 
-    ResultBean code();
-
     ResultBean uploadMinio(String fileName, String objectName);
 
     ResultBean updateService(MultipartFile file);
@@ -47,4 +45,11 @@ public interface ICommonService {
     //重启当前服务
     ResultBean restart();
 
+    //热更新
+    ResultBean hotUpdate(MultipartFile file);
+
+    //生成代码
+    void generateCode(String tables, HttpServletResponse response);
+
+    ResultBean code();
 }

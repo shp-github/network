@@ -1,5 +1,6 @@
 spring:
-
+  application:
+    name: network
 
   kafka:
     bootstrap-servers: 127.0.0.1:9092
@@ -40,8 +41,8 @@ spring:
 
     # Elasticsearch
   elasticsearch:
-     host: 127.0.0.1
-     port: 9200
+    host: 127.0.0.1
+    port: 9200
   #elasticsearch.rest.username=elastic
   #elasticsearch.rest.password=Longshine01
   #配置rabbitMq 服务器
@@ -101,6 +102,21 @@ spring:
     url: jdbc:mysql://192.168.1.33:3306/network?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     platform: mysql
     type: com.alibaba.druid.pool.DruidDataSource
+#      #oracle配置
+#      driverClassName: oracle.jdbc.OracleDriver
+#      url: jdbc:oracle:thin:@47.100.206.162:1521:xe
+#      username: renren
+#      password: 123456
+#      #SQLServer配置
+#      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://192.168.10.10:1433;DatabaseName=renren_fast
+#      username: sa
+#      password: 123456
+#      #PostgreSQL配置
+#      driverClassName: org.postgresql.Driver
+#      url: jdbc:postgresql://192.168.10.10:5432/renren_fast
+#      username: postgres
+#      password: 123456
 
     # 下面为连接池的补充设置，应用到上面所有数据源中
     # 初始化大小，最小，最大
@@ -154,9 +170,9 @@ spring:
       flush-mode: #Sessions 刷新模式
       namespace: #用于存储会话的键的命名空间。
 
-# ===================================================================
-# 配置拦截器
-# ===================================================================
+  # ===================================================================
+  # 配置拦截器
+  # ===================================================================
 
   aop:
     auto: true
@@ -264,3 +280,21 @@ aliyun.username: root
 aliyun.password: sS123456
 aliyun.directory: /usr/local/test
 
+
+# ===================================================================
+# 热更新
+# ===================================================================
+arthas:
+  httpPort: -1
+  telnetPort: -1
+  ip: localhost
+  appName: network
+  agentId: network_123
+  tunnelServer: ws://localhost:7777/ws
+  sessionTimeout: 1800
+
+# ===================================================================
+# 指定数据库，可选值有【mysql、oracle、sqlserver、postgresql、mongodb】
+# ===================================================================
+renren:
+  database: mysql
