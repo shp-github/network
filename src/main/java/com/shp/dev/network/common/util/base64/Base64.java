@@ -1,4 +1,4 @@
-package com.shp.dev.network.common.util;
+package com.shp.dev.network.common.util.base64;
 
 /**
  * Base64工具类

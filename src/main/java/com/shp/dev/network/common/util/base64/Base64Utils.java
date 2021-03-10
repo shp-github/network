@@ -1,4 +1,4 @@
-package com.shp.dev.network.common.util;
+package com.shp.dev.network.common.util.base64;
 
 import com.shp.dev.network.common.util.request.HttpRequestUrl;
 import org.apache.commons.codec.binary.Base64;

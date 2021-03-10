@@ -1,6 +1,6 @@
 package com.shp.dev.network.common.util.image;
 
-import com.shp.dev.network.common.util.Base64;
+import com.shp.dev.network.common.util.base64.Base64;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import javax.imageio.ImageIO;

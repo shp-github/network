@@ -1,7 +1,7 @@
 package com.shp.dev.network.common.config;
 
 import com.baidu.aip.face.AipFace;
-import com.shp.dev.network.common.util.Base64Utils;
+import com.shp.dev.network.common.util.base64.Base64Utils;
 import com.shp.dev.network.common.util.image.CutImgUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;

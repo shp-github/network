@@ -3,7 +3,7 @@ package com.shp.dev.network.common.service.impl;
 import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.config.StartedUpRunner;
 import com.shp.dev.network.common.service.ICommonService;
-import com.shp.dev.network.common.util.Base64;
+import com.shp.dev.network.common.util.base64.Base64;
 import com.shp.dev.network.common.util.DateUtils;
 import com.shp.dev.network.common.util.ShpUtils;
 import com.shp.dev.network.common.util.code.MongoManager;

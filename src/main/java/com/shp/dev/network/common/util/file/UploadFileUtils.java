@@ -1,6 +1,6 @@
 package com.shp.dev.network.common.util.file;
 
-import com.shp.dev.network.common.util.Base64Utils;
+import com.shp.dev.network.common.util.base64.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
