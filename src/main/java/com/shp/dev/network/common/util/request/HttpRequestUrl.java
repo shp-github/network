@@ -4,7 +4,6 @@ import net.sf.json.JSONArray;
 import org.json.JSONObject;
 import sun.net.www.protocol.http.HttpURLConnection;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -210,8 +209,8 @@ public class HttpRequestUrl {
         try {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
-            HttpsURLConnection conn = (HttpsURLConnection)realUrl.openConnection();
-            //URLConnection conn = realUrl.openConnection();
+            //HttpsURLConnection conn = (HttpsURLConnection)realUrl.openConnection();
+            URLConnection conn = realUrl.openConnection();
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");

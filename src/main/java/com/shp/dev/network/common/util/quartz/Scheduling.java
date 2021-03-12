@@ -30,4 +30,9 @@ public class Scheduling {
     private void process2() {
     }
 
+    @Scheduled(initialDelay=1000,fixedRate = Long.MAX_VALUE)
+    private void process() {
+    }
+
+
 }

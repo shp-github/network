@@ -30,7 +30,7 @@
 
         var sendlockReconnect = false;  //避免ws重复连接
         var sendWs = null;          // 判断当前浏览器是否支持WebSocket
-        var sendWsUrl = "ws://127.0.0.1:8090/ws/chat";
+        var sendWsUrl = "ws://127.0.0.1:8091/ws/chat";
         createSendWebSocket(sendWsUrl);   //连接ws
 
         function createSendWebSocket(url) {

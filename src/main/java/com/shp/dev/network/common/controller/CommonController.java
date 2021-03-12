@@ -2,11 +2,13 @@ package com.shp.dev.network.common.controller;
 
 import com.shp.dev.network.common.bean.ResultBean;
 import com.shp.dev.network.common.service.ICommonService;
+import com.shp.dev.network.common.util.base64.Base64Utils;
 import com.shp.dev.network.common.util.file.CommonFileUtils;
 import com.shp.dev.network.common.util.quartz.QuartzUtil;
 import com.shp.dev.network.common.util.sql.model.SysSql;
 import com.shp.dev.network.common.util.sql.service.ISysSqlService;
 import com.shp.dev.network.common.util.validation.Name;
+import com.shp.dev.network.common.util.websocket.WebSocketVideoServer;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -87,8 +89,8 @@ public class CommonController {
 
     @ApiOperation("base64转文件")
     @RequestMapping(value = "/base2file", method = RequestMethod.POST)
-    public void base2file(String base64,HttpServletResponse r) {
-         commonService.base2file(base64,r);
+    public void base2file(String base64, HttpServletResponse r) {
+        commonService.base2file(base64, r);
     }
 
 
@@ -125,7 +127,7 @@ public class CommonController {
 
     //测试变量校验验证
     @PostMapping("/name")
-    public static Name name(@Valid @RequestBody Name name){
+    public static Name name(@Valid @RequestBody Name name) {
         return name;
     }
 
@@ -136,36 +138,43 @@ public class CommonController {
         return ResultBean.success();
     }
 
-    @RequestMapping(value="/generateCode",method=RequestMethod.POST)
+    @RequestMapping(value = "/generateCode", method = RequestMethod.POST)
     @ApiOperation("生成代码")
-    public void generateCode(String tables, HttpServletResponse response){
-        commonService.generateCode(tables,response);
+    public void generateCode(String tables, HttpServletResponse response) {
+        commonService.generateCode(tables, response);
     }
 
-    @RequestMapping(value="/shell",method=RequestMethod.POST)
+    @RequestMapping(value = "/shell", method = RequestMethod.POST)
     @ApiOperation("模拟shell命令")
-    public ResultBean shell(String str){
+    public ResultBean shell(String str) {
         return commonService.shell(str);
     }
 
-    @RequestMapping(value="/request",method=RequestMethod.POST)
+    @RequestMapping(value = "/request", method = RequestMethod.POST)
     @ApiOperation("发送请求")
-    public ResultBean request(String url,String parm){
-        return commonService.request(url,parm);
+    public ResultBean request(String url, String parm) {
+        return commonService.request(url, parm);
     }
 
-    @RequestMapping(value="/concurrentRequest",method=RequestMethod.POST)
+    @RequestMapping(value = "/concurrentRequest", method = RequestMethod.POST)
     @ApiOperation("并发发送请求")
-    public ResultBean concurrentRequest(String url,String parm,Integer max){
-        return commonService.concurrentRequest(url,parm,max);
+    public ResultBean concurrentRequest(String url, String parm, Integer max) {
+        return commonService.concurrentRequest(url, parm, max);
     }
 
-    @RequestMapping(value="/getDateTime",method=RequestMethod.POST)
+    @RequestMapping(value = "/getDateTime", method = RequestMethod.POST)
     @ApiOperation("获取当前时间")
-    public ResultBean getDateTime(){
+    public ResultBean getDateTime() {
         return commonService.getDateTime();
     }
 
+    @RequestMapping(value = "/broadCastInfo", method = RequestMethod.POST)
+    @ApiOperation("视频服务广播消息")
+    public ResultBean broadCastInfo() {
+        String baseByFile = "data:image/png;base64,"+Base64Utils.getBaseByFile(" E:\\a.png ");
+        WebSocketVideoServer.broadCastInfo(baseByFile);
+        return ResultBean.success();
+    }
 
 
 }

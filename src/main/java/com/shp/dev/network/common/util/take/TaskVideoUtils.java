@@ -20,7 +20,6 @@ public class TaskVideoUtils {
 
     public static void main(String[] args) throws IOException {
 
-
         Document doc = Jsoup.connect("https://www.zxzj.me/video/3030-1-1.html").get();        //获取页面文档
         Element body = doc.body();
         Element child = body.child(1).child(0).child(0).child(0).child(0).child(0).child(0);
@@ -29,15 +28,6 @@ public class TaskVideoUtils {
             System.out.println(divList.get(i));
         }
 
-
-
-
-
-
     }
-
-
-
-
 
 }

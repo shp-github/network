@@ -1,10 +1,12 @@
 package com.shp.dev.network.common.util.opencv;
 
+import com.shp.dev.network.common.util.MyStreamUtils;
+import com.shp.dev.network.common.util.base64.Base64Utils;
+import lombok.SneakyThrows;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.objdetect.CascadeClassifier;
 
 import javax.imageio.ImageIO;
@@ -15,7 +17,9 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 
 public class New {
+    @SneakyThrows
     public static void main(String[] args) throws UnsupportedEncodingException {
+        //-Djava.library.path=E:\javawork\network\lib\64
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         String templatePath = Class.class.getResource("/xml").getPath();
@@ -39,8 +43,14 @@ public class New {
             String[] fileList = file.list();
 
             for (String f : fileList) {
+                long start = System.currentTimeMillis();
                 System.out.println(j++);
-                Mat img = Imgcodecs.imread(filepath + f);
+
+
+                String baseByFile = Base64Utils.getBaseByFile(filepath + f);
+                Mat img = MyStreamUtils.base642Mat(baseByFile);
+
+                //Mat img = Imgcodecs.imread(filepath + f);
                 MatOfRect detections = new MatOfRect();
                 carDetector.detectMultiScale(img, detections);
                 for (Rect rect : detections.toArray()) {
@@ -53,6 +63,8 @@ public class New {
                     System.out.println(s);
 
                 }
+
+                System.out.println(System.currentTimeMillis()-start);
 
             }
         }
