@@ -4,16 +4,13 @@ import com.shp.dev.network.common.util.MyStreamUtils;
 import com.shp.dev.network.common.util.base64.Base64Utils;
 import com.shp.dev.network.common.util.redis.RedisConfig;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.objdetect.CascadeClassifier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
@@ -34,9 +31,8 @@ import java.util.Map;
  * @ProjectName: network
  */
 
-@Component
-@EnableScheduling
-@Slf4j
+//@Component
+//@EnableScheduling
 public class VideoIdentify {
 
     @Autowired

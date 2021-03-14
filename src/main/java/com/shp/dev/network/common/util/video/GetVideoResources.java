@@ -8,9 +8,7 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import javax.sound.sampled.AudioFormat;
 import java.awt.image.BufferedImage;
@@ -28,8 +26,8 @@ import java.util.concurrent.TimeUnit;
  * @ProjectName: network
  */
 
-@Component
-@EnableScheduling
+//@Component
+//@EnableScheduling
 @Slf4j
 public class GetVideoResources {
 

@@ -2,9 +2,7 @@ package com.shp.dev.network.common.util.video;
 
 import com.shp.dev.network.common.util.jdbc.JDBCUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +16,8 @@ import java.util.Map;
  * @ProjectName: network
  */
 
-@Component
-@EnableScheduling
+//@Component
+//@EnableScheduling
 @Slf4j
 public class VideoConstant {
 
