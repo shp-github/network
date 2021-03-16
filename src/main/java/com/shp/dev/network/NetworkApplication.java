@@ -1,31 +1,27 @@
 package com.shp.dev.network;
 
-import com.shp.dev.network.common.util.netty.DiscardServer;
-import org.springframework.boot.CommandLineRunner;
+import com.shp.dev.network.common.util.netty.NettyWebSocketServer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.annotation.Resource;
-
 //@SpringBootApplication//表示为启动类
 @SpringBootApplication(exclude = MongoAutoConfiguration.class)
 @EnableSwagger2//启动swagger-ui接口文档
 //@EnableJms //启动消息队列
-
-public class NetworkApplication implements CommandLineRunner {
+@Slf4j
+public class NetworkApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NetworkApplication.class, args);
-    }
-
-    //整合netty
-    @Resource
-    private DiscardServer discardServer;
-    @Override
-
-    public void run(String... args) throws Exception {
-        discardServer.run(8080);
+        try {
+            new NettyWebSocketServer().start();
+            log.info("netty加载成功");
+        }catch(Exception e) {
+            log.error("netty加载失败{}",e.getMessage());
+            System.out.println("NettyServerError:"+e.getMessage());
+        }
     }
 }
