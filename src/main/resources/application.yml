@@ -153,12 +153,11 @@ spring:
     user: 123456
     password: 123456
     pool:
+      queueName: publish.queue
+      topicName: publish.topic
       # 使用flase,此处改为true报错，不清楚什么原因
       enabled: false
       max-connections: 10
-
-    queueName: publish.queue
-    topicName: publish.topic
 
 
   session:
@@ -240,7 +239,7 @@ pagehelper:
 # tomcat服务配置
 # ===================================================================
 server:
-  port: 8081
+  port: 8090
 
 # ===================================================================
 # token配置
@@ -306,3 +305,23 @@ memcache:
   ip: 192.168.1.33
 #  ip: localhost
   port: 11211
+
+# ===================================================================
+# springboot整合dubbo
+# ===================================================================
+dubbo:
+  registry:
+    #address=zookeeper://192.168.204.81:2181?backup=192.168.204.82:2181,192.168.204.83:2181
+    address: zookeeper://192.168.1.33:2181
+    protocol: zookeeper
+  protocol:
+    name: dubbo
+    port: 20880
+  scan:
+    #扫描注解包通过该设置将服务注册到zookeeper
+    base-packages: com.shp.dev.network.common.util.dubbo
+  consumer:
+    #超时时间
+    timeout: 3000
+    #重试次数
+    retries: 3

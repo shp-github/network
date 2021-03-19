@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 07/03/2021 22:26:12
+ Date: 19/03/2021 14:17:12
 */
 
 SET NAMES utf8mb4;
@@ -256,7 +256,41 @@ CREATE TABLE `QRTZ_TRIGGERS`  (
 -- ----------------------------
 -- Records of QRTZ_TRIGGERS
 -- ----------------------------
-INSERT INTO `QRTZ_TRIGGERS` VALUES ('MyScheduler', 'synchronizedRedis', 'group2', 'synchronizedRedis', 'group2', NULL, 1615108380000, 1615108320000, 5, 'WAITING', 'CRON', 1615099903000, 0, NULL, 2, '');
+INSERT INTO `QRTZ_TRIGGERS` VALUES ('MyScheduler', 'synchronizedRedis', 'group2', 'synchronizedRedis', 'group2', NULL, 1616134680000, 1616134620000, 5, 'WAITING', 'CRON', 1615099903000, 0, NULL, 2, '');
+
+-- ----------------------------
+-- Table structure for TB_VIDEO
+-- ----------------------------
+DROP TABLE IF EXISTS `TB_VIDEO`;
+CREATE TABLE `TB_VIDEO`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `v_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '视频流地址',
+  `v_type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '视频类型',
+  `v_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '视频标题',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '最后操作的时间',
+  `is_del` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '1' COMMENT '0表示已经删除  1表示存在',
+  `channel` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '唯一标识',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of TB_VIDEO
+-- ----------------------------
+INSERT INTO `TB_VIDEO` VALUES (1, 'rtmp://58.200.131.2:1935/livetv/cctv1', 'CCTV', 'CCTV1', '2020-03-11 00:00:00', '0', 'CCTV1');
+INSERT INTO `TB_VIDEO` VALUES (2, 'rtmp://58.200.131.2:1935/livetv/cctv2', 'CCTV', 'CCTV2', '2020-03-11 00:00:00', '0', 'CCTV2');
+INSERT INTO `TB_VIDEO` VALUES (3, 'rtmp://58.200.131.2:1935/livetv/cctv3', 'CCTV', 'CCTV3', '2020-03-11 00:00:00', '0', 'CCTV3');
+INSERT INTO `TB_VIDEO` VALUES (4, 'rtmp://58.200.131.2:1935/livetv/cctv4', 'CCTV', 'CCTV4', '2020-03-11 00:00:00', '0', 'CCTV4');
+INSERT INTO `TB_VIDEO` VALUES (5, 'rtmp://58.200.131.2:1935/livetv/cctv5', 'CCTV', 'CCTV5', '2020-03-11 00:00:00', '0', 'CCTV5');
+INSERT INTO `TB_VIDEO` VALUES (6, 'rtmp://58.200.131.2:1935/livetv/cctv6', 'CCTV', 'CCTV6', '2020-03-11 00:00:00', '1', 'CCTV6');
+INSERT INTO `TB_VIDEO` VALUES (7, 'rtmp://58.200.131.2:1935/livetv/cctv7', 'CCTV', 'CCTV7', '2020-03-11 00:00:00', '0', 'CCTV7');
+INSERT INTO `TB_VIDEO` VALUES (8, 'rtmp://58.200.131.2:1935/livetv/cctv8', 'CCTV', 'CCTV8', '2020-03-11 00:00:00', '0', 'CCTV8');
+INSERT INTO `TB_VIDEO` VALUES (9, 'rtmp://58.200.131.2:1935/livetv/cctv9', 'CCTV', 'CCTV9', '2020-03-11 00:00:00', '0', 'CCTV9');
+INSERT INTO `TB_VIDEO` VALUES (10, 'rtmp://58.200.131.2:1935/livetv/cctv10', 'CCTV', 'CCTV10', '2020-03-11 00:00:00', '0', 'CCTV10');
+INSERT INTO `TB_VIDEO` VALUES (11, 'rtmp://58.200.131.2:1935/livetv/cctv11', 'CCTV', 'CCTV11', '2020-03-11 00:00:00', '0', 'CCTV11');
+INSERT INTO `TB_VIDEO` VALUES (12, 'rtmp://58.200.131.2:1935/livetv/cctv12', 'CCTV', 'CCTV12', '2020-03-11 00:00:00', '0', 'CCTV12');
+INSERT INTO `TB_VIDEO` VALUES (13, 'rtmp://58.200.131.2:1935/livetv/cctv13', 'CCTV', 'CCTV13', '2020-03-11 00:00:00', '0', 'CCTV13');
+INSERT INTO `TB_VIDEO` VALUES (14, 'rtmp://58.200.131.2:1935/livetv/cctv14', 'CCTV', 'CCTV14', '2020-03-11 00:00:00', '0', 'CCTV14');
+INSERT INTO `TB_VIDEO` VALUES (15, 'rtmp://58.200.131.2:1935/livetv/cctv15', 'CCTV', 'CCTV15', '2020-03-11 00:00:00', '0', 'CCTV15');
 
 -- ----------------------------
 -- Table structure for hibernate_sequence
